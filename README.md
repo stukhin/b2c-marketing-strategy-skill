@@ -57,7 +57,7 @@ You need [Claude Code](https://claude.ai/download), free. Available for macOS, W
 **Option 2 — clone the repo:**
 
 ```bash
-git clone https://github.com/[your-username]/b2c-marketing-strategy-skill.git ~/.claude/skills/b2c-marketing-strategy
+git clone https://github.com/stukhin/b2c-marketing-strategy-skill.git ~/.claude/skills/b2c-marketing-strategy
 ```
 
 The skill is auto-discovered. Restart Claude Code if it does not appear in the skills list.

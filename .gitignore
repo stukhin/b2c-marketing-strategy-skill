@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+._*
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Build artefacts (the .skill archive is built locally and attached to GitHub Releases)
+*.skill
+
+# Local test outputs
+output/
+test-outputs/

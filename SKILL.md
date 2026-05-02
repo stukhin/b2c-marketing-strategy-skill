@@ -156,7 +156,7 @@ Also visually verify: every sidebar `nav-item` scrolls to a real `<section id=".
 Tell user:
 1. **File path** of the output.
 2. **3-line summary** — what's filled with verified data (count of T1/T2/T3 sources), what's hypothesis-heavy (count of ★), what's `[to be confirmed]`.
-3. **Token cost** — total estimate vs Mode budget guardrail (Mode 1 ≤105K, Mode 2 ≤135K, Mode 3 ≤175K). Flag if any wave exceeded its band.
+3. **Token cost** — total estimate vs Mode budget guardrail (Mode 1 ≤200K, Mode 2 ≤300K, Mode 3 ≤420K). See "Token budget guardrails per wave" section for the per-wave breakdown. Flag if any wave exceeded its band by >25%.
 4. **Invite block-level feedback explicitly:**
 
    > "If any section needs refinement — comment with the section name + what's off (e.g. `#brand-pyramid: essence too generic`, `#competitors: missing local player X`, `#media: TikTok share too high`). I'll iterate before locking the file."
@@ -201,7 +201,6 @@ Every line of fillable content takes one of three states. **No fact-looking text
   - **Multi-country activity** (parent rollout, regional play, several markets) → rows = countries; cluster = Core / Expansion / Probe / Monitor.
   - **Single-country activity** (most B2C strategies) → rows = cities / metros / tier-2 clusters within that country.
   - **Single-city activity** (hyper-local, city-only) → SKIP section entirely; replace body with the `<div class="card"><p class="intro-para text-mute"><em>Not applicable — single-city operation…</em></p></div>` opt-out card; keep heading + sidebar nav entry. Do NOT fabricate regional priorities for a single-city business.
-- **#comm-plan** — quarterly grid: seasonal / experiment / always-on dots.
 - **#risks** — 5–7 risks on probability × impact bubble chart + 5-sentence risk picture.
   - **Anti-linearity rule (hard):** don't generate risks where p and i correlate diagonally. Real risk maps are scattered — every risk register MUST include at least **one off-diagonal in each direction**: a low-probability / high-impact tail-risk (regulatory action, black-swan competitor move, sovereign event) AND a high-probability / low-impact constant drag (FX volatility, CPM creep, supply churn). If all 8 risks march along the diagonal, the strategist hasn't separated likelihood from severity — fix before shipping. The narrative ("What the risk picture tells us") should explicitly call out the off-diagonal points and what makes their response different from on-diagonal risks.
 - **#product-initiatives** (already covered above for flagships) — additional UX contract: each `.lt-mark` in the year timeline binds to the matching `.flagship-card` by index. When the user drags a Gantt dot, the JS already updates both the timeline `.lt-date` AND the flagship card's `.fs-launch-pill` ("Launch Q[X] [year]") + first `.fs-stat-value` ("Mon DD, YYYY"). Bob just needs `.lt-bar` to carry `data-year="<YYYY>"` and the lt-mark / flagship-card order to match — no other action.

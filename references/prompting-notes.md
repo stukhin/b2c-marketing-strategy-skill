@@ -23,16 +23,16 @@ The `.ext` link content is always EMPTY — the source name surfaces in the `tit
 ### Hypothesis — `★ hyp` superscript star
 
 ```html
-$<strong>5-7M</strong><span class="hyp" data-hyp="based on category benchmark for stage scale-up B2C subscription, no public envelope disclosed">★</span>
+$<strong>5-7M</strong><span class="hyp">★</span>
 ```
 
-The star is small (9px), gray, superscript. On hover it shows a small dark plate with `Hypothesis — <rationale>`. Use for:
+The star is small (9px), gray, superscript. **Visual marker only — no hover behaviour, no tooltip.** Place it immediately after the value it qualifies, no space. Use for:
 - Numbers Bob inferred from category benchmarks
 - Predicted competitor reactions
 - Sensitivity profiles where no segment study exists
 - KPI targets where no public data confirms them
 
-The `data-hyp` value should be SHORT (under 220 chars) and explain the basis: which benchmark, which analogue, why this estimate is reasonable.
+The rationale for the hypothesis lives in the surrounding prose (e.g. "calibrated against [category]-leader benchmark band"), not on the marker itself. Earlier versions carried a `data-hyp="<rationale>"` attribute for a hover plate; that was removed because the plate was rarely read and the cursor change distracted from the document. Don't add `data-hyp` — it's inert.
 
 ### To be confirmed — `[to be confirmed]` plate
 
@@ -135,7 +135,7 @@ If user corrects framing — incorporate, re-confirm. Only once user OKs explici
 Mode 1, brand the user named is obscure, web_search returns near-nothing, user can't help further:
 
 - Flag the section with `.hypothesis-badge` at the top (a yellow ⚠ pill saying "Hypothesis-baseline — no verified data available; replace when tracker / research lands").
-- Fill the section with `★ hyp` markers throughout, each `data-hyp` explaining the analogous benchmark used.
+- Fill the section with `★ hyp` markers throughout; explain the analogous benchmark used in the surrounding prose, not on the marker.
 - In the final summary to user, name this section explicitly as "hypothesis-heavy, recommend you commission [tracker / research] to validate".
 
 Don't fake it. Don't skip it (sidebar nav must match). The badge + ★ markers + summary callout makes the limitation visible, which is the honest thing.

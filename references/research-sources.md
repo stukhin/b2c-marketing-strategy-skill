@@ -164,6 +164,22 @@ Optional add-ons (1-2 if relevant):
 
 ---
 
+## Tier 6.5 — Competitor communication examples (run when filling `#competitors` comm-examples block)
+
+A targeted follow-up batch of 3-5 queries, separate from the main Research Sweep, run when populating the competitor communication examples sub-block. Without these, the comm-examples table fills with `★`-flagged "based on positioning history" copy, which is functionally invented content. With these, examples land with `.ext` citations to real campaigns.
+
+For each named direct competitor (top 3-5 in `#competitors`), run:
+
+- `[Competitor] [country] campaign [year-1..year]` — recent campaign press coverage
+- `[Competitor] tagline slogan [country]` — current positioning copy
+- `[Competitor] [country] OOH digital ad creative [year]` — visual / creative material coverage
+
+Sources that consistently cover this: Adweek, Adage, Campaign Live, The Drum, Sostav.ru (CIS), vc.ru (Russia / CIS), Cossette / Strategy (Canada), branding magazine etc. App Store / Play Store reviews and AppFollow can supplement with consumer-side reactions to specific campaigns.
+
+If a competitor returns nothing meaningful from these queries, note "no public campaign coverage found" in the comm-example cell rather than inferring copy from positioning. An honest gap reads better than fabricated marketing language.
+
+---
+
 ## Tier 7 — Out-of-category fallback
 
 If brand is outside the 15 supported categories AND adjacent partial coverage doesn't fit:

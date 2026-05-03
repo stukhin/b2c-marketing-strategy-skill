@@ -168,15 +168,17 @@ Optional add-ons (1-2 if relevant):
 
 A targeted follow-up batch of 3-5 queries, separate from the main Research Sweep, run when populating the competitor communication examples sub-block. Without these, the comm-examples table fills with `★`-flagged "based on positioning history" copy, which is functionally invented content. With these, examples land with `.ext` citations to real campaigns.
 
+**Approach: source-agnostic web search, recency-constrained.** Don't lock the search to a specific publication list — coverage of campaigns varies enormously by market (advertising press in some countries, agency newsrooms in others, social media accounts in others). Let general search surface whatever exists locally. Constrain by date so the examples reflect current positioning, not legacy creative.
+
 For each named direct competitor (top 3-5 in `#competitors`), run:
 
-- `[Competitor] [country] campaign [year-1..year]` — recent campaign press coverage
-- `[Competitor] tagline slogan [country]` — current positioning copy
-- `[Competitor] [country] OOH digital ad creative [year]` — visual / creative material coverage
+- `[Competitor] [country] campaign [year-1..year]` — recent campaign coverage, any source
+- `[Competitor] tagline [year]` — current positioning copy
+- `[Competitor] [country] ad creative [year-1..year]` — visual / creative material
 
-Sources that consistently cover this: Adweek, Adage, Campaign Live, The Drum, Sostav.ru (CIS), vc.ru (Russia / CIS), Cossette / Strategy (Canada), branding magazine etc. App Store / Play Store reviews and AppFollow can supplement with consumer-side reactions to specific campaigns.
+Cap examples to the **last 18-24 months**. A campaign from 2019 doesn't represent how the brand communicates today.
 
-If a competitor returns nothing meaningful from these queries, note "no public campaign coverage found" in the comm-example cell rather than inferring copy from positioning. An honest gap reads better than fabricated marketing language.
+If a competitor returns nothing meaningful from these queries, mark the cell as a hypothesis (`★`) **and** add an inline note: `(no public campaign coverage found in last 24 months — inferred from positioning)`. An honest gap reads better than fabricated marketing language.
 
 ---
 

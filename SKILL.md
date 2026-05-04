@@ -173,6 +173,7 @@ Every line of fillable content takes one of three states. **No fact-looking text
   - **T2** = research aggregator (Statista, GWI, McKinsey). Attribute the source.
   - **T3** = signal / editorial (Adweek, Reddit, news). Qualitative claims only, never precise numbers.
 - **Hypothesis** → `<span class="hyp">★</span>` small superscript star, visual marker only. Use for any number / claim NOT user-provided AND NOT web-sourced. The marker has no hover behaviour — it's a flag, not a tooltip. (Earlier versions carried `data-hyp="<rationale>"` for a hover plate; that was removed because the rationale was rarely read and the cursor change was distracting. `data-hyp` attributes still in old runs are inert.)
+  - **Placement rule (single source of truth):** the star sits **immediately after** the value or named term it qualifies, with **no space** between them. Example: `<strong>2.5M</strong><span class="hyp">★</span>` or `Auto-buyers<span class="hyp">★</span>`. **Never** at the end of a sentence (reads as a footnote and gets lost), **never** inside `<strong>` (visually buries the marker inside bold weight), **never** with a leading space (the star drifts away from its referent and the eye loses the link). One star per claim — if a sentence carries three hypothesis numbers, each gets its own star, not a single trailing one.
 - **To be confirmed** → `<span class="tbd">[to be confirmed]</span>` for genuinely-internal facts only the user can provide (specific people, internal tracker setups, past campaign results).
 
 ## Per-section content notes

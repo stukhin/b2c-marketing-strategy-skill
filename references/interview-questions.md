@@ -12,6 +12,8 @@ In Mode 2 and Mode 3, **ALWAYS** offer document upload **at the start of the int
 
 Then **parse uploaded content first**, then ask only the remaining questions whose answers aren't already in the docs. For partially-answered questions (doc has revenue band but not channel split), ask only the missing slice.
 
+**Caveat — parent-level vs market-level documents.** Watch the document scope before deciding which questions to skip. If the upload is a **parent-level** corporate doc (10-K, group annual report, parent-brand investor deck, board-level strategy memo), it carries macro context but does not answer market-level questions about the specific country / brand-market combination at hand. In that case, parse the upload for **Research Sweep enrichment only** (parent metrics, group strategy, holding-level ESG and risk language), and **still ask Q3–Q9 in full** at the market level. Only **market-level** documents (in-country marketing plan, brand tracker for that market, segmentation study commissioned for that market, post-campaign report on local creative) can legitimately reduce the question count. When the document is somewhere in between (a regional report covering several countries), ask Q3–Q9 for the country at hand and use the doc to calibrate hypothesis ranges.
+
 ---
 
 ## Mode 1 — Fast draft (2 questions, no upload)

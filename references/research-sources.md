@@ -2,11 +2,11 @@
 
 Deterministic catalog for the Research Sweep. The catalog is a **floor, not a ceiling** — if you spot a high-value source outside this list (recent regulator news, breaking story, niche specialist publication), add it. 1-3 ad-hoc additions per run is fine; 10+ defeats the speed-up.
 
-**Total queries per Research Sweep:** 12-18. All in one parallel `web_search` batch.
+**Total queries per Research Sweep:** 14-21. All in one parallel `web_search` batch.
 
 ---
 
-## Tier 1 — Universal Digital DNA (always 6 queries)
+## Tier 1 — Universal Digital DNA (always 9 queries)
 
 Run these for every brief, regardless of category or market.
 
@@ -16,6 +16,9 @@ Run these for every brief, regardless of category or market.
 4. `Sensor Tower [Brand] [country] downloads MAU [year]` — app performance, top app peers.
 5. `SimilarWeb [Brand].com traffic ranking [country]` — web traffic, top sources, audience overlap.
 6. `World Bank [country] consumer spending GDP per capita` — economic backdrop.
+7. `[Brand] vs [Top competitor 1] vs [Top competitor 2] Google Trends [country] 12 months` — search interest trajectory, momentum vs competitors, seasonality. Critical for `#brand-health` when no tracker exists and for `#market` trend direction.
+8. `[Brand] App Store rating reviews [country] [year]` — current iOS rating, recent review sentiment, update cadence (signal of product velocity). Skim top reviews for pain points / praise themes that feed `#consumers` voice quotes and `#brand-health` attribute hypotheses.
+9. `[Brand] Google Play rating reviews [country] [year]` — Android-side coverage. In emerging markets Android is the dominant platform, often a richer signal than App Store. Same usage as #8.
 
 ---
 

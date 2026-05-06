@@ -4,6 +4,8 @@ Deterministic catalog for the Research Sweep. The catalog is a **floor, not a ce
 
 **Total queries per Research Sweep:** 14-21. All in one parallel `web_search` batch.
 
+**Cross-source validation rule.** When the Sweep returns numbers that go into critical fields (population, internet penetration, ad-market size, category market size, direct competitor MAU/revenue), pay attention to whether you have **2+ independent sources** for each. If only one source is available, the number gets the `★ hyp` marker with a "single-source estimate" note. If two sources disagree by >10%, surface the disagreement as a range or as an inline note rather than silently picking one. Full protocol in `SKILL.md` → "Cross-source validation for critical numbers".
+
 ---
 
 ## Tier 1 — Universal Digital DNA (always 9 queries)

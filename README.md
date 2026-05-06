@@ -97,6 +97,61 @@ Opus 4.7 runs are roughly 5× the API cost of Sonnet but produce sharper synthes
 
 ---
 
+## Troubleshooting
+
+### Skill doesn't appear after I drop the `.skill` file
+
+- Restart Claude Code. The skills directory is scanned on launch; new skills aren't auto-detected during a running session.
+- Confirm the file landed in the right place: `~/.claude/skills/` for user-level install, or the project's `.claude/skills/` for per-project install. The file should keep its `.skill` extension.
+- The `.skill` archive is a renamed zip. If your OS auto-extracted it on download (some browsers do this), re-download with right-click → "Save Link As" and keep the extension.
+
+### Run aborted in the middle (rate limit, network, hand-stop)
+
+- The output file is preserved at the wave it reached. Open `output/<brand>-<market>-v1.html` to see what's filled.
+- To resume: in a new session, point at the existing output file and ask the skill to continue from the next unfilled section. Don't restart from scratch — you'll lose what was already done.
+- For rate-limit aborts: wait until the 5-hour Pro window resets (or switch to the Anthropic API for the rest of the run).
+
+### Self-check reports placeholder leaks
+
+- The Step 5 Python self-check catches `[Company]`, `Competitor 1`, `[Axis 1]`, etc. that survived into the output. Most live in JS arrays (`const RISKS`, `const BRAND_TREND_DATA`, radar `competitors[]`) which generate visible chart labels.
+- Open the output file, search for the leaked pattern, and replace inline. Then re-run the self-check command from Step 5.
+- The pre-Wave-4 JS data sweep catches most of these proactively. If you see leaks in the final self-check, the sweep was skipped.
+
+### `Download .docx` button does nothing
+
+- Open the browser dev console (Cmd+Option+I → Console). The button logs to console on click. Common causes:
+  - Pop-up blocker preventing the file download dialog. Allow downloads from `file://` or from the host where the dashboard is served.
+  - JS error from a malformed section (e.g. unbalanced HTML tags). Fix the section and reload.
+- If the button still fails, the dashboard is fully self-contained — you can also save the page as PDF from the browser as a workaround.
+
+### Output is mostly hypotheses (★ everywhere)
+
+- That's the expected hypothesis density for Mode 1 Fast (70-80% `★`). For lower density, switch to Mode 2 Guided (30-50% `★`) or Mode 3 Deep (10-20% `★`) and upload internal docs (brand tracker, last year's marketing plan, segmentation study).
+- For brands without strong public coverage (small startup, nascent market), even Mode 3 will lean hypothesis-heavy. The skill is most accurate for brands with rich public data (DataReportal / Sensor Tower / press coverage).
+
+### Channel reallocation chart is empty
+
+- The chart auto-derives from the `#mmm` budget table. If the table has placeholder rows (`[Bucket N]`), the chart can't populate. Fill the MMM table first, the chart updates on page reload.
+- If the brand is in launch / GTM mode, the chart is intentionally hidden via `class="gtm-hide"` (no prev-year baseline to compare against).
+
+### Sidebar nav doesn't scroll to the right section
+
+- The sidebar links use `<section id="...">` anchors. If you renamed a section or removed one, the nav-item still tries to scroll to a non-existent id.
+- Verify with: `grep -E '<section id=' output/<brand>-<market>-v1.html` — the 20 expected ids are: `exec, basics, business-goal, assumptions, market, consumers, competitors, brand-health, swot, brand-pyramid, positioning, audience-lifecycle, comm-matrix, product-initiatives, media, mmm, regions, comm-plan, risks, references, next-steps`.
+
+### Force a specific model (Sonnet vs Opus)
+
+- Claude Code respects the model you pick in the session settings. For full prod runs Sonnet 4.6 is the default — production-grade output, ~5× cheaper than Opus.
+- For sharper synthesis sections (`#exec` / `#assumptions` / `#risks`), Opus 4.7 produces noticeably tighter prose, but token cost is higher and Pro plan limits will fill faster.
+
+### Roll back to a previous version
+
+- All releases are kept on GitHub. If a newer version regresses output quality, download an older `.skill` from the [Releases page](https://github.com/stukhin/b2c-marketing-strategy-skill/releases) and replace the file in `~/.claude/skills/`.
+
+### Something else broke / output is weird
+
+Open an issue or DM me on [LinkedIn](https://www.linkedin.com/in/stukhin/) with: which mode you ran, what brand + market, the section that misbehaved, and ideally a screenshot. Real-world failure modes are the main driver of skill improvements.
+
 ## Author
 
 Created and maintained by **Alexander Styukhin**.

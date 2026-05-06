@@ -271,6 +271,33 @@ For each section, certain facts MUST be `.ext`-sourced (not `★ hyp`). Use this
 - **#assumptions** — high-confidence assumptions must cite the leading-signal source (NRB / Department of Customs / DoTM / etc.); low-confidence can be ★.
 - **#exec / #basics / #next-steps** — synthesis only. Citations come via `.tri` triangle links to evidence sections — no new citations needed.
 
+## Cross-source validation for critical numbers
+
+Some numbers carry the whole document. If population is wrong, every per-segment size is wrong. If a competitor's MAU is off by 50%, the whole H2H verdict misreads. These numbers must be triangulated against **at least 2 sources** before being stated as fact.
+
+**Critical-number list — always cross-check:**
+
+- Country / market population (`#market`, `#regions`)
+- Internet penetration / mobile penetration (`#market`)
+- Ad-market size in $USD (`#market`)
+- Category market size in $USD (`#market`)
+- Direct competitor MAU / users / accounts (`#competitors`)
+- Direct competitor revenue / GMV (`#competitors`)
+- Cars sold / accounts opened / orders / equivalent category-volume number (`#market` or `#competitors`)
+
+**Protocol:**
+
+1. For each critical number, find at least 2 independent sources during the Research Sweep. Independent means the second source is not just citing the first (e.g. a news article quoting DataReportal does NOT count as a second source — find an original primary or a different aggregator).
+2. Compare the values. Compute the spread: `(max - min) / min × 100%`.
+3. **If spread ≤ 10%** — state the number from the higher-tier source (T1 over T2 over T3), cite it normally with `.ext`. Optionally note the second source in the same `title=` attr (e.g. `title="DataReportal 2026 [T1]; Statista 2026 confirms within 5%"`).
+4. **If spread > 10%** — do not pick one number silently. Either:
+   - Use a **range** in prose (e.g. "33–37M internet users" with both `.ext` links inline), OR
+   - Cite the higher-tier source as primary AND add an inline note with the lower-tier figure: e.g. "33.1M internet users<a class="ext" href="..." title="DataReportal 2026 [T2]"></a> (ITU reports 31M for the same year — methodology differs)."
+
+The point is to make the disagreement **visible** to the reader rather than hide it behind a single confident-looking number. A range with two sources reads more credible than a precise number from one.
+
+**When 2 sources don't exist** — fall back to the standard `★ hyp` marker with explicit "single-source estimate" note. Better to flag the weakness than fake confidence.
+
 ## Voice and tone — single rule
 
 Across all 20 sections, write **declarative, action-led prose**. Sentence length max 30 words; if you wrote a 40-word sentence, split it. No corporate hedging ("synergies", "leverage", "best-in-class"); no rhetorical questions; no MBA jargon. Concrete verbs over abstract nouns. The tone register stays the same from #exec through #references — a strategy doc reads like one author, not five.

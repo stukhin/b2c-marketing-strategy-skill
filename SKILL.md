@@ -39,7 +39,7 @@ Summarize in ONE LINE: `[Brand] · [stage: launch/scale/mature/decline] · [prim
 
 ### Step 3 — Research Sweep
 
-First, **load the matched category preset.** Open `references/industry-presets.md` (index, ~30 lines), match the brand to one of the 15 categories, then read **only that category's preset file** in `references/presets/<category>.md` (e.g. `presets/food-delivery.md`). Don't load all presets — the index is enough to route.
+First, **load the matched category preset.** Open `references/industry-presets.md` (index, ~30 lines), match the brand to one of the 16 categories, then read **only that category's preset file** in `references/presets/<category>.md` (e.g. `presets/food-delivery.md`). Don't load all presets — the index is enough to route.
 
 Then run ONE parallel batch of `web_search` calls. Use `references/research-sources.md` to assemble 14–21 queries:
 

@@ -6,7 +6,7 @@ Each preset = typical segments / channel split benchmark / KPI metrics / categor
 
 These are **starting frameworks**. Real businesses deviate — adjust based on user's intel + Research Sweep findings.
 
-## 15 supported categories
+## 16 supported categories
 
 | # | Category | Examples | File |
 |---|---|---|---|
@@ -25,6 +25,7 @@ These are **starting frameworks**. Real businesses deviate — adjust based on u
 | 13 | Subscription streaming | Netflix, Spotify, Disney+ | `presets/streaming.md` |
 | 14 | Edtech / online learning | Duolingo, Coursera, Udemy | `presets/edtech.md` |
 | 15 | Travel / OTA | Booking, Expedia, Airbnb | `presets/travel.md` |
+| 16 | Media / content / publishing | The Athletic, Substack, Bloomberg consumer, Vox Media | `presets/media-content.md` |
 
 ## Outside the 15
 
@@ -33,7 +34,7 @@ These are **starting frameworks**. Real businesses deviate — adjust based on u
 
 ## Routing logic
 
-1. Match brand to one of the 15 categories above by primary product / monetisation model.
+1. Match brand to one of the 16 categories above by primary product / monetisation model.
 2. If 2 categories seem to fit (e.g. food delivery + q-commerce), pick the one that owns the largest share of GMV today and read that preset; flag the secondary in your fill notes.
 3. If nothing fits, check `presets/adjacent.md`. If still no match, use `presets/fallback.md`.
 4. Read **only the matched preset file** — not this index, not all categories.

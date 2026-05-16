@@ -36,9 +36,9 @@ All three modes produce the same 20-section dashboard. Modes are a hypothesis-de
 
 ## Categories supported
 
-The skill ships with category presets for 15 B2C digital verticals:
+The skill ships with category presets for 16 B2C digital verticals:
 
-Classifieds · Full-stack e-commerce · Jobs · Real estate · Fashion / resale · Digital banking · Payments & remittance · Lending & BNPL · Investment & trading · Ride-hail & mobility · Quick-commerce · Food delivery · Subscription streaming · Edtech · Travel / OTA
+Classifieds · Full-stack e-commerce · Jobs · Real estate · Fashion / resale · Digital banking · Payments & remittance · Lending & BNPL · Investment & trading · Ride-hail & mobility · Quick-commerce · Food delivery · Subscription streaming · Edtech · Travel / OTA · Media / content / publishing
 
 Plus an **adjacent** preset for partial-coverage verticals (telemed, insurtech, dating, gaming, social/UGC, crypto) and a **first-principles fallback** for everything else.
 
@@ -61,6 +61,18 @@ git clone https://github.com/stukhin/b2c-marketing-strategy-skill.git ~/.claude/
 ```
 
 The skill is auto-discovered. Restart Claude Code if it does not appear in the skills list.
+
+### Before the first run — set up permissions
+
+A full run touches the template, all section files, the self-check Python script, and writes the output HTML. Without pre-approved permissions Claude Code will pop up an "Allow?" prompt **40+ times** during the run. To avoid this, open Claude Code Settings → Permissions and add these allowlist entries before the first run:
+
+- `Read(*)` — let the skill read the template and reference files freely
+- `Edit(output/**)` — let the skill write the generated dashboard
+- `Bash(python3 -c *)` — let the self-check script run
+- `Bash(grep:*)` — used by the JS data sweep step
+- `WebSearch` — for the Research Sweep (usually approved by default)
+
+This is a one-time setup. After this, runs proceed without permission interruptions.
 
 ---
 
@@ -85,19 +97,31 @@ The interview can be in any language. The final dashboard is **always in English
 
 ---
 
-## Token cost expectations
+## Token cost and wall-clock expectations
 
-Approximate full-run cost on Claude Sonnet 4.6 with prompt caching:
+A full run consumes more than the "200K tokens" headline suggests once you count Research Sweep, all 20 section edits, the self-check, and conversational overhead. Real numbers from production runs:
 
-- Mode 1 (Fast): ≤ 200K tokens, roughly $1–2 via API or ~5–10% of a Pro subscription's 5-hour window
-- Mode 2 (Guided): ≤ 300K tokens
-- Mode 3 (Deep): ≤ 420K tokens
+- Mode 1 (Fast): ≤ 200K tokens, **40–90 minutes** of wall clock (depends on web_search response times and permission prompts), roughly $1–2 via API
+- Mode 2 (Guided): ≤ 300K tokens, **60–120 minutes**
+- Mode 3 (Deep): ≤ 420K tokens, **90–180 minutes**
 
-Opus 4.7 runs are roughly 5× the API cost of Sonnet but produce sharper synthesis sections. For most production runs, Sonnet is the right default.
+**Pro subscription ($20/mo).** Mode 1 typically fits in a single 5-hour Pro window. Mode 2 fits if you don't have other Claude Code activity that day. **Mode 3 often hits the Pro limit mid-run** — Claude Code pauses and the run resumes after the 5-hour reset. If you need uninterrupted full runs, use the Max plan or Anthropic API directly.
+
+**Sonnet 4.6** is the right default for almost all runs — production-grade output, ~5× cheaper than Opus. **Opus 4.7** produces sharper synthesis sections (`#exec` / `#assumptions` / `#risks`) but burns Pro plan limits ~3× faster than Sonnet for the same run.
+
+**Tip for first-time testers:** start with Mode 1 to get the pipeline end-to-end in under an hour. Once you've seen what the skill produces, decide whether your specific brand/market merits a Mode 2 or Mode 3 follow-up.
 
 ---
 
 ## Troubleshooting
+
+### Claude Code asks me to "Allow?" 40+ times during the run
+
+This is the single biggest UX problem on first runs. Claude Code's Read / Edit / Bash tools request permission for each file or command unless the action is allowlisted. A full skill run touches dozens of files plus the self-check script, so the prompts add up fast.
+
+**Fix:** Settings → Permissions → add allowlist entries for `Read(*)`, `Edit(output/**)`, `Bash(python3 -c *)`, `Bash(grep:*)`, `WebSearch`. See "Before the first run — set up permissions" above for the full list.
+
+**Mid-run rescue:** if you're already deep into a run and hitting prompts, the "Allow always for this session" option (instead of one-time Allow) gets you to the end faster.
 
 ### Skill doesn't appear after I drop the `.skill` file
 

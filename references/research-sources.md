@@ -189,7 +189,7 @@ If a competitor returns nothing meaningful from these queries, mark the cell as 
 
 ## Tier 7 — Out-of-category fallback
 
-If brand is outside the 15 supported categories AND adjacent partial coverage doesn't fit:
+If brand is outside the 16 supported categories AND adjacent partial coverage doesn't fit:
 
 - `McKinsey consumer survey [country] [year]`
 - `BCG [category] outlook [year]`

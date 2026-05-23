@@ -2,7 +2,7 @@
 
 A Claude Skill that turns a short interview into a fully-formed annual marketing strategy for a B2C digital product. Output is a single interactive HTML dashboard, 20 sections, with a built-in `.docx` export button.
 
-> Status: **v1.0**, stable across all three modes. Actively evolving based on real-world feedback.
+> Status: **v1.1**, stable across all three modes and three Stage-modifier variants (launch / GTM / concept). English and Russian output. Actively evolving based on real-world feedback.
 
 ---
 

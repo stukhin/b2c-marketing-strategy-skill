@@ -7,7 +7,7 @@ description: Create a structured annual marketing strategy for B2C digital produ
 
 Produces a one-file interactive HTML dashboard — annual strategy for a B2C digital product. 20 sections across overview / context / brand-audience / execution / governance / references. Single output file, English or Russian (picked at the start of the run), with client-side .docx export button.
 
-> **Skill state:** v1.0. Stable across all three modes. Continues to evolve based on real-world feedback.
+> **Skill state:** v1.1. Consolidation release after eleven patches' worth of real-tester feedback. Stable across all three modes and three Stage-modifier variants (launch / GTM / concept). English and Russian output. Continues to evolve.
 
 ## Workflow — fixed, do not reorder
 

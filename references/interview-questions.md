@@ -4,6 +4,21 @@ Mode-aware question banks. Don't ask anything outside the spec. Asking too many 
 
 ---
 
+## Step 0 — combined mode + language prompt
+
+Always asked first, before any content questions. Combine both choices into ONE message to the user, not two separate turns:
+
+> "Pick a mode:
+> · **Fast draft** (~5 min, 2 questions)
+> · **Guided** (~15–20 min, 9 questions, can upload docs)
+> · **Deep interview** (~30–45 min, 22 questions, can upload docs)
+>
+> Output language: **English** (default) or **Russian**."
+
+If the user picks mode but doesn't state language, default to English. If the user picks Russian and the brand is clearly non-Russian-targeting, confirm once: "Russian output for [Brand]? Confirm or switch to English." After both are picked — proceed to Q1.
+
+---
+
 ## Document uploads — Mode 2 and Mode 3
 
 In Mode 2 and Mode 3, **ALWAYS** offer document upload **at the start of the interview**, immediately after Q1-Q2 (brand+market and use-case+stage are needed first to make the upload prompt useful — without those the doc parse has no anchor). The upload prompt is mandatory — never skip it in Mode 2/3.
@@ -48,7 +63,7 @@ After Q1-Q2, run the upload prompt above. Parse any uploaded docs, then ask only
 
 **Q9.** Brand pyramid foundations — essence (1 phrase compressed truth), purpose (1-sentence ambition for what the brand makes possible), 3-5 personality adjectives, 3-6 RTBs (reasons to believe — concrete facts with quantifiers).
 
-After this — Confirm + Research + Generate. Hypothesis density: ~30% if docs covered most of Q3-Q9, ~50% if no docs.
+After this — Confirm + Research + Generate. Hypothesis density: ~30-50% with uploaded docs covering most of Q3-Q9; ~50-65% without docs (mostly Q answers + Research Sweep findings, no internal data to anchor against).
 
 ---
 
@@ -84,7 +99,7 @@ After Q1-Q2, run the upload prompt above. Parse any uploaded docs, then ask only
 
 **Q22 (final upload reminder).** Anything else you have as a file — past strategy docs, brand book, segmentation study, brand tracker waves, customer research deck — that you haven't already shared? If yes, attach now; we'll fold the data in before the Confirm step.
 
-After Q22 — Confirm + Research + Generate. ~10-20% hypotheses, only where genuinely no data.
+After Q22 — Confirm + Research + Generate. Hypothesis density: ~10-20% with uploaded docs (brand tracker / segmentation study / past plans answer most Q3-Q22 with real numbers); ~50-70% without docs (Mode 3 without uploads is mostly a longer interview, not a denser-fact run — Research Sweep + interview answers still leave many `#brand-health`, `#mmm`, `#business-goal` numbers as hypotheses). If real-data-density matters, the upload step matters more than the mode pick.
 
 ---
 

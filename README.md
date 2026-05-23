@@ -24,13 +24,13 @@ Every fact-looking number is labelled: blue dot for an external source (with T1/
 
 ## Three modes
 
-| Mode | Time | Questions | Hypothesis density |
+| Mode | Time | Questions | Hypothesis density (with uploaded docs / without) |
 |---|---|---|---|
-| **Fast draft** | ~5 min | 2 | 70–80% `★` |
-| **Guided** | ~15–20 min | 9 (+ optional document upload) | 30–50% `★` |
-| **Deep interview** | ~30–45 min | 22 (+ optional document upload) | 10–20% `★` |
+| **Fast draft** | ~5 min | 2 | 70–80% `★` (no upload step) |
+| **Guided** | ~15–20 min | 9 (+ optional document upload) | 30–50% `★` with docs / 50–65% `★` without |
+| **Deep interview** | ~30–45 min | 22 (+ optional document upload) | 10–20% `★` with docs / 50–70% `★` without |
 
-All three modes produce the same 20-section dashboard. Modes are a hypothesis-density dial, not a feature switch.
+All three modes produce the same 20-section dashboard. Modes are a hypothesis-density dial AND an interview-depth dial — but the density payoff requires uploaded docs (brand tracker, last year's plan, segmentation study). Without uploads, Mode 3 is mostly a longer interview, not a denser-fact document. If real-data-density matters, what you upload matters more than which mode you pick.
 
 ---
 
@@ -93,7 +93,7 @@ The dashboard supports four themes (Steel / Vichy / Opaline / Mono) via the side
 
 ## Output language
 
-The interview can be in any language. The final dashboard is **always in English**, by design — keeps the document portable across multinational teams and consistent for benchmarking.
+You pick the output language at the start of the run: **English** (default) or **Russian**. The interview itself can be conducted in any language regardless of the output choice. Two-language scope is intentional — English keeps the document portable across multinational teams; Russian covers the case when the brand targets a Russian-speaking market and an English deck would feel out of place. Other languages are not supported yet.
 
 ---
 

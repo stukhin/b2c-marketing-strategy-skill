@@ -1,25 +1,31 @@
 ---
 name: b2c-marketing-strategy
-description: Create a structured annual marketing strategy for B2C digital products (marketplaces, fintech, subscription services, ride-hailing, delivery, consumer apps). Use when the user mentions "marketing strategy", "annual marketing plan", "GTM strategy", "marketing roadmap", "brand strategy document", or asks for help structuring a top-down marketing strategy with sections like positioning, segmentation, competitors, media plan, or brand health. Offers three generation modes (Fast draft / Guided / Deep interview) picked at the start; Guided and Deep accept optional document uploads. Produces an interactive HTML dashboard (with voting, charts, sortable tables) plus a built-in "Download .docx" button. English output only.
+description: Create a structured annual marketing strategy for B2C digital products (marketplaces, fintech, subscription services, ride-hailing, delivery, consumer apps). Use when the user mentions "marketing strategy", "annual marketing plan", "GTM strategy", "marketing roadmap", "brand strategy document", or asks for help structuring a top-down marketing strategy with sections like positioning, segmentation, competitors, media plan, or brand health. Offers three generation modes (Fast draft / Guided / Deep interview) picked at the start; Guided and Deep accept optional document uploads. Produces an interactive HTML dashboard (with voting, charts, sortable tables) plus a built-in "Download .docx" button. Output language picked at start: English (default) or Russian.
 ---
 
 # B2C marketing strategy skill
 
-Produces a one-file interactive HTML dashboard — annual strategy for a B2C digital product. 20 sections across overview / context / brand-audience / execution / governance / references. Single output file, English only, with client-side .docx export button.
+Produces a one-file interactive HTML dashboard — annual strategy for a B2C digital product. 20 sections across overview / context / brand-audience / execution / governance / references. Single output file, English or Russian (picked at the start of the run), with client-side .docx export button.
 
 > **Skill state:** v1.0. Stable across all three modes. Continues to evolve based on real-world feedback.
 
 ## Workflow — fixed, do not reorder
 
-### Step 0 — Mode select
+### Step 0 — Mode + language select
 
-Ask user to pick:
+Ask user to pick **two things in one prompt**:
+
+**(a) Mode:**
 
 1. **Fast draft** (~5 min) — 2 questions (brand+market, use-case+stage), no document upload, 70–80% hypotheses marked ★, straw-man for review
-2. **Guided** (~15–20 min) — 9 questions total: 2 base + upload prompt at start + 7 prioritized fillers (drawn from `references/40-question-bank.md`), ~30–50% hypotheses depending on doc richness
-3. **Deep interview** (~30–45 min) — 22 questions total: 2 base + upload prompt at start + 20 prioritized fillers + final upload reminder, 10–20% hypotheses, consulting-grade
+2. **Guided** (~15–20 min) — 9 questions total: 2 base + upload prompt at start + 7 prioritized fillers (drawn from `references/40-question-bank.md`), ~30–50% hypotheses **with uploaded docs**, ~50–65% **without docs**
+3. **Deep interview** (~30–45 min) — 22 questions total: 2 base + upload prompt at start + 20 prioritized fillers + final upload reminder, 10–20% hypotheses **with uploaded docs**, ~50–70% **without docs** (Mode 3 without docs is mostly longer interview, not denser facts — set expectations)
+
+**(b) Output language:** **English** (default) or **Russian**. Two options, no others. Default is English. If the brand is clearly Russia-targeting and the user signals Russian context in their reply, suggest Russian as the natural fit but let the user pick.
 
 If the user mentions internal docs / decks / brand tracker, OR the brand has rich public coverage on this market — nudge toward Guided or Deep with upload: "Notice you have [docs] / [Brand] in [market] has substantial public coverage. Guided or Deep with even one document beats Fast alone." User decides.
+
+**When Russian is selected**, every user-facing string in the final dashboard renders in Russian — section headings inside the body, chart titles, chart subtitles, tooltip text in `info-tip data-tip` attrs, takeaway labels, table column headers, segment names, voice quotes, and the full prose of all 20 sections. The sidebar nav labels stay in English (they're structural anchors). Document `<title>` and `.doc-title-sub` translate to Russian. JS-rendered chart axis labels translate to Russian via the same Edit pattern as section content.
 
 ### Step 1 — Interview
 
@@ -126,6 +132,10 @@ leaks = [
     (r'data-(?:tip|value|axis|bucket|note|company)="\[[^\]]+\]"', 'data-* attribute carries [...] placeholder'),
     (r'BRAND_TREND_DATA[\s\S]{0,400}?\[Company\]', 'BRAND_TREND_DATA const carries [Company] placeholder'),
     (r'\[Y[12]\s*target\]|\[Y[12]\]', 'Y1/Y2 target placeholder — fill with concrete number or ★'),
+    # Format-discipline checks added 2026-05 — data-* attrs accept plain text only
+    (r'data-(?:roas|delta|pct|note|bucket|tip|value|axis)="[^"]*<[a-zA-Z]', 'HTML tag inside data-* attribute — strip the tag, use plain text (Unicode ★ ok)'),
+    (r'data-delta="(?!(?:[+\-]\d|—|\d|"))[^"]+"', 'data-delta has non-numeric value — must be +X%, -X%, +X.Xpp, or —'),
+    (r'data-roas="(?!(?:\d|—|"))[^"]+"', 'data-roas has non-numeric value — must be X.Xx, X.X×, or —'),
 ]
 total_leaks = 0
 for pat, label in leaks:
@@ -186,7 +196,14 @@ Every line of fillable content takes one of three states. **No fact-looking text
 - **#consumers** — **5–8 segment cards (minimum 5)**: reach % bar, 1–2 metrics, sensitivity, voice quote, brand chips. Hard quality cap: each segment must have distinguishable financial behaviour, distinct media mix, OR distinct message — if two segments collapse on all three, merge them and pick a 5th from elsewhere.
   - **Card top-corner badges (mandatory, all cards):** `<span class="seg-num">#N</span>` left + `<span class="seg-prio high|med|low">High|Med|Low</span>` right. N is the sequential card index (1, 2, …); priority distribution **must be ~1–2 High, 1–3 Med, the rest Low** — the priority signal is where budget actually concentrates, not a flat spread. Don't tag every card the same level.
   - Two donut charts above the scroller (Revenue/GMV share + Audience share) auto-derive from `.segment-bar.reach` + `.segment-bar.gmv` widths and `.seg-num` + `.segment-name` labels. Bob fills the cards once; pies populate.
-- **#competitors** — direct (parameters-as-rows × competitors-as-columns), head-to-head verdicts, indirect, 1–2 positioning maps, radar chart. **Communication examples must come from real campaigns, not invented "based on positioning history" copy.** When this section is being filled, run a follow-up `web_search` batch (3–5 queries) for recent campaign coverage of the named direct competitors. Source-agnostic — let search engines surface whatever covers the local market (industry press, agency case studies, brand newsrooms, social, regional ad databases). What matters is **recency** and **factual grounding**, not a fixed publication list. Query patterns: `"[Competitor] [country] campaign 2024..2026"`, `"[Competitor] tagline 2025"`, `"[Competitor] [country] ad creative 2024..2026"`. Constrain to the last 1.5–2 years so the example reflects current positioning, not legacy creative. Cite each example with `.ext` link to whatever source surfaced. **If the search returns nothing meaningful for a competitor**, mark the cell as a hypothesis with the standard `★` AND add an explicit inline note in the cell: `(no public campaign coverage found in last 24 months — inferred from positioning)`. The note is mandatory — without it the reader can't tell fact from inference. **Never** generate all comm-examples in Mode 1 without running the search first; the section's value collapses if all four cells are inferred.
+- **#competitors** — direct (parameters-as-rows × competitors-as-columns), head-to-head verdicts, indirect, 1–2 positioning maps, radar chart. **Communication examples MUST come from real campaigns. This is a mandatory pre-fill step, not a recommendation.**
+
+  **Before filling the `.comm-examples` block:**
+  1. **Run a 3–5 query `web_search` batch** for recent campaigns of the named direct competitors. This is a separate batch from the main Research Sweep — fire it when you reach `#competitors` in Wave 1, not earlier.
+  2. **Source-agnostic** — let search surface whatever covers the local market (industry press, agency case studies, brand newsrooms, social, regional ad databases). Query patterns: `"[Competitor] [country] campaign 2024..2026"`, `"[Competitor] tagline 2025"`, `"[Competitor] [country] ad creative 2024..2026"`. Constrain to the **last 18–24 months** so examples reflect current positioning, not legacy creative.
+  3. **Cite each example with `.ext`** linking to whatever source surfaced.
+  4. **If a competitor returns nothing meaningful**, mark that cell as `★` AND add the mandatory inline note: `(no public campaign coverage found in last 24 months — inferred from positioning)`. The note is the contract — without it the reader can't tell fact from inference.
+  5. **Never** generate all comm-examples without running the search first. If you find yourself writing four `★`-flagged cells in a row, you skipped step 1 — stop and run the search.
 - **#brand-health** — funnel attribute bars vs benchmark. If no real tracker data, flag whole section with `.hypothesis-badge`.
 - **#swot** — 4 quadrants × 3–5 items, each with `.ext` evidence.
 - **#brand-pyramid** — 5 levels (essence → values → personality → benefits → attributes).
@@ -197,11 +214,13 @@ Every line of fillable content takes one of three states. **No fact-looking text
 - **#media** — 6–12 channel rows: reach + funnel-stage + KPI + plan direction (↑/→/↓).
 - **#mmm** — budget bucket bar + channel saturation × ROAS table.
   - **Each `.budget-bar-seg` MUST carry data-attributes** that drive the on-hover tooltip card: `data-bucket="<name>"`, `data-pct="<X>%"`, `data-delta="<+/-X% vs <prev-year>>"`, `data-roas="<X.Xx>"`, optional `data-note="<1-line context>"`. If a bucket has no Δ or ROAS signal (Tools, Reserve), use `—`. Don't leave the `[+/-X% vs 2025]` / `[X.Xx]` placeholders — they render visibly when hovered. The legacy `title="..."` attribute is ignored.
+  - **CRITICAL — data-* attributes accept PLAIN TEXT ONLY. Never embed HTML tags inside an attribute value.** `data-roas="1.1× ★"` is fine (★ is a Unicode character). `data-roas="1.1x<span class='hyp'>★</span>"` is **broken** — the `<span>` renders as literal text in the tooltip. If a hypothesis flag is needed, put the Unicode `★` directly in the attribute value, or move the rationale into `data-note`.
+  - **data-delta format is fixed.** Allowed values: `+X%`, `-X%`, `+X.Xpp`, `-X.Xpp`, or `—`. **Not allowed:** word labels like `+new ★`, `+★ vs 2025`, `SEO: 8-12× long-term`. If a bucket has no prior-year baseline, the delta is `—`. Any qualitative context goes into `data-note`, never into `data-delta`. Same constraint applies to `data-roas` — it's either `X.Xx`, `X.X×` or `—`, nothing else.
 - **#comm-plan** — quarterly grid: T1 / T2 / T3 / Special projects / Always-on rows × 4 quarter columns. **T1 and T2 cells MUST carry `.q-meta` block** with budget + lead KPI + KPI target — they're the anchor campaigns of the year. Format inside the cell: `<div class="q-bet">[Bet ref]</div><div class="q-meta"><span class="q-budget">$X.XM</span><span class="q-kpi">[Lead KPI]: <span class="q-kpi-target">[target]</span></span></div>`. T3 experiments and Special projects (seasonal moments) do NOT need `.q-meta` — they're either small-spend or non-campaign rows; Always-on rows already carry budget inline. Lead KPI maps to the funnel stage the campaign drives (Awareness for T1 launch wave, Acquisition for T2 push, Retention for CRM-led pushes). T1/T2 budgets across all four quarters MUST sum to the corresponding `#mmm` Brand + Performance bucket totals — that's the cross-section validation. KPI target carries `★` in launch year (Stage modifier triggered).
 - **#regions** — 3–7 cluster rows with tube-bar reach. **Cluster logic block uses 3-column grid** (`.cluster-grid`), not the deprecated `<ul class="cluster-bullets">` flow. Each row of the grid is three direct children: `<span class="cluster-pill cN">[Cluster name]</span>` + `<strong class="cluster-regions">[Regions]</strong>` + `<span class="cluster-intent">[Strategic intent]</span>`. The grid keeps pill / regions / intent vertically aligned across rows regardless of content length. Add or drop sets of three to flex cluster count 2–6. **Adaptive granularity by business scope:**
   - **Multi-country activity** (parent rollout, regional play, several markets) → rows = countries; cluster = Core / Expansion / Probe / Monitor.
   - **Single-country activity** (most B2C strategies) → rows = cities / metros / tier-2 clusters within that country.
-  - **Single-city activity** (hyper-local, city-only) → SKIP section entirely; replace body with the `<div class="card"><p class="intro-para text-mute"><em>Not applicable — single-city operation…</em></p></div>` opt-out card; keep heading + sidebar nav entry. Do NOT fabricate regional priorities for a single-city business.
+  - **Single-city activity** (hyper-local, city-only) → DON'T leave the section empty. Replace the regional table with a 2-block layout: **(a)** a short opt-out card explaining national-scale geography doesn't apply (`<div class="card"><p class="intro-para text-mute"><em>Not applicable — single-city operation; national regional breakdown isn't the right grain.</em></p></div>`), AND **(b)** an intra-city district breakdown using the `.cluster-grid` (3-column pill / region-list / intent) — typically 3–5 districts categorised by role (Anchor / Growth / Build / Gateway / Probe). District clusters are useful for execution-level OOH, distribution, partnership and creator-program targeting — never fabricate them, only fill if Research Sweep returned the district map or the user named the districts in interview. Remove the entire `<table id="regionTable">` skeleton (and its `<colgroup>` / `<thead>` / `<tbody>`) when going to district-layout — leftover table tags become invisible bloat that self-check flags.
 - **#risks** — 5–7 risks on probability × impact bubble chart + 5-sentence risk picture.
   - **Anti-linearity rule (hard):** don't generate risks where p and i correlate diagonally. Real risk maps are scattered — every risk register MUST include at least **one off-diagonal in each direction**: a low-probability / high-impact tail-risk (regulatory action, black-swan competitor move, sovereign event) AND a high-probability / low-impact constant drag (FX volatility, CPM creep, supply churn). If all 8 risks march along the diagonal, the strategist hasn't separated likelihood from severity — fix before shipping. The narrative ("What the risk picture tells us") should explicitly call out the off-diagonal points and what makes their response different from on-diagonal risks.
 - **#product-initiatives** (already covered above for flagships) — additional UX contract: each `.lt-mark` in the year timeline binds to the matching `.flagship-card` by index. When the user drags a Gantt dot, the JS already updates both the timeline `.lt-date` AND the flagship card's `.fs-launch-pill` ("Launch Q[X] [year]") + first `.fs-stat-value` ("Mon DD, YYYY"). Bob just needs `.lt-bar` to carry `data-year="<YYYY>"` and the lt-mark / flagship-card order to match — no other action.
@@ -325,6 +344,7 @@ Sessions running in 1M-context mode (large-context experimental setting) typical
 3. **No invented competitor MAU / segment sizes / KPI benchmarks without research backing.** If web_search returned nothing → `★ hyp` with explicit "no public data, category benchmark only" rationale.
 4. **No wrapping demo prose in `<span class="ph">` to bypass placeholder checks.** `.ph` is for short numerics inside real prose. If you can't fill — use `[to be confirmed]` plate.
 5. **No opt-out via leaving demo text.** If a section truly doesn't apply, replace its body with `<div class="card"><p class="intro-para text-mute"><em>Not applicable for this business — no [scope] in plan for this period.</em></p></div>`.
+6. **Opt-out means physical removal of chart elements, NOT `display:none`.** When a section is opt-outed, the body card replaces everything between `<h3>` and `</section>` — including any `<canvas>`, `.metric-chips`, sortable `<table>` skeletons. The JS chart builders fail silently on missing canvas (no need to disable them), but leaving a hidden canvas via `style="display:none;"` is a hack — it leaves chart code in the DOM and gets picked up by self-check noise. Remove the elements entirely.
 
 ## Token discipline during generation
 

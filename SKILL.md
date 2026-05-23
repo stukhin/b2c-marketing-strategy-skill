@@ -15,15 +15,26 @@ Produces a one-file interactive HTML dashboard — annual strategy for a B2C dig
 
 Ask user to pick **two things in one prompt**:
 
-**(a) Mode:**
+**(a) Mode:** (times below = INTERVIEW only. Add generation phase: ~45 min for Mode 1, +2–3 hours for Mode 2, +4–5 hours for Mode 3. See total wall-clock guidance below the menu.)
 
-1. **Fast draft** (~5 min) — 2 questions (brand+market, use-case+stage), no document upload, 70–80% hypotheses marked ★, straw-man for review
-2. **Guided** (~15–20 min) — 9 questions total: 2 base + upload prompt at start + 7 prioritized fillers (drawn from `references/40-question-bank.md`), ~30–50% hypotheses **with uploaded docs**, ~50–65% **without docs**
-3. **Deep interview** (~30–45 min) — 22 questions total: 2 base + upload prompt at start + 20 prioritized fillers + final upload reminder, 10–20% hypotheses **with uploaded docs**, ~50–70% **without docs** (Mode 3 without docs is mostly longer interview, not denser facts — set expectations)
+1. **Fast draft** — 2 questions (brand+market, use-case+stage), no document upload. Interview ~5 min, total run up to 1 hour. 70–80% hypotheses marked ★, straw-man for review.
+2. **Guided** — 9 questions total: 2 base + upload prompt at start + 7 prioritized fillers (drawn from `references/40-question-bank.md`). Interview ~15–20 min, total run a few hours (2–4h typical). ~30–50% hypotheses **with uploaded docs**, ~50–65% **without docs**.
+3. **Deep interview** — 22 questions total: 2 base + upload prompt at start + 20 prioritized fillers + final upload reminder. Interview ~30–45 min, total run can take a full work day (5–6+ hours, often interrupted by rate limits on Pro plan). 10–20% hypotheses **with uploaded docs**, ~50–70% **without docs** (Mode 3 without docs is mostly longer interview, not denser facts — set expectations).
 
 **(b) Output language:** **English** (default) or **Russian**. Two options, no others. Default is English. If the brand is clearly Russia-targeting and the user signals Russian context in their reply, suggest Russian as the natural fit but let the user pick.
 
-If the user mentions internal docs / decks / brand tracker, OR the brand has rich public coverage on this market — nudge toward Guided or Deep with upload: "Notice you have [docs] / [Brand] in [market] has substantial public coverage. Guided or Deep with even one document beats Fast alone." User decides.
+**Mode recommendation — nudge based on user's stated time + docs availability.** After presenting the menu, Bob adds a short recommendation line (one sentence, not a sermon):
+
+- **"If you have about an hour and no internal docs"** → recommend Mode 1.
+- **"If you have a few hours AND can upload at least one internal doc"** (brand tracker, last year's plan, segmentation study) → recommend Mode 2.
+- **"If you have a full work day AND multiple internal docs AND want consulting-grade depth"** → recommend Mode 3.
+- **"If this is your first run with the skill"** → recommend Mode 1 regardless of time, so the user sees what the output looks like before committing to a longer run.
+
+Phrase as a recommendation, not a gate. User can ignore and pick any mode. Don't ask "how much time do you have?" as a separate question — fold the rec into the same menu turn:
+
+> "For most first-time runs and brands without internal data on hand, Mode 1 is the right pick — you'll have a draft within the hour. Pick Mode 2 if you have a few hours AND at least one doc to upload. Mode 3 only if you have a full day plus multiple docs."
+
+If the user mentions internal docs / decks / brand tracker, OR the brand has rich public coverage on this market — additional nudge toward Guided or Deep with upload: "Notice you have [docs] / [Brand] in [market] has substantial public coverage. Guided or Deep with even one document beats Fast alone." User decides.
 
 **When Russian is selected**, every user-facing string in the final dashboard renders in Russian — section headings inside the body, chart titles, chart subtitles, tooltip text in `info-tip data-tip` attrs, takeaway labels, table column headers, segment names, voice quotes, and the full prose of all 20 sections. The sidebar nav labels stay in English (they're structural anchors). Document `<title>` and `.doc-title-sub` translate to Russian. JS-rendered chart axis labels translate to Russian via the same Edit pattern as section content.
 
@@ -35,13 +46,13 @@ Use `references/interview-questions.md` for the mode's question set. Don't add e
 
 > "Note: [brand] doesn't currently operate in [market] — treating as GTM hypothesis. Confirm or adjust. Q2: what's the use case + stage?"
 
-When the check returns "not in market" OR Q2 answer is `stage=launch` OR `use case=GTM for new market` — auto-trigger the **Stage modifier — launch / GTM** rules (see section below) for Wave 1, 3, 5 sections. Don't gate it as a separate confirmation; the user can correct in their Q2 reply.
+When the check returns "not in market" OR Q2 answer is `stage=launch`, `stage=concept`, `stage=pre-product`, OR `use case=GTM for new market`, OR use case=`MVP planning / concept validation / pre-funding strategy` — auto-trigger the **Stage modifier — launch / GTM / concept** rules (see section below) for Wave 1, 3, 5 sections. Pick the right variant (A launch / B GTM / C concept) based on which trigger fired. Don't gate it as a separate confirmation; the user can correct in their Q2 reply.
 
 **If the user uploads documents (Mode 2 or Mode 3):** parse uploaded content first, then ask only the questions whose answers aren't already covered. Don't repeat questions the docs answer — that's the whole point of upload. For partially-answered questions (doc has revenue band but not channel split), ask only the missing slice.
 
 ### Step 2 — Confirm
 
-Summarize in ONE LINE: `[Brand] · [stage: launch/scale/mature/decline] · [primary market] · [use case: investment pitch / annual plan / brand relaunch / GTM]. OK to proceed?` User confirms.
+Summarize in ONE LINE: `[Brand] · [stage: concept / launch / scale / mature / decline] · [primary market] · [use case: investment pitch / annual plan / brand relaunch / GTM / MVP planning]. OK to proceed?` User confirms.
 
 ### Step 3 — Research Sweep
 
@@ -231,14 +242,28 @@ Every line of fillable content takes one of three states. **No fact-looking text
 - **#product-initiatives** (already covered above for flagships) — additional UX contract: each `.lt-mark` in the year timeline binds to the matching `.flagship-card` by index. When the user drags a Gantt dot, the JS already updates both the timeline `.lt-date` AND the flagship card's `.fs-launch-pill` ("Launch Q[X] [year]") + first `.fs-stat-value` ("Mon DD, YYYY"). Bob just needs `.lt-bar` to carry `data-year="<YYYY>"` and the lt-mark / flagship-card order to match — no other action.
 - **#references** — 8–15 sources cited via `.ext` throughout, source-tier badges.
 
-## Stage modifier — launch / GTM
+## Stage modifier — launch / GTM / concept
 
-Added 2026-04-29. The dashboard template defaults assume an operating brand in a market with measurable history (current MAU, last-year spend, brand tracker waves, prev-year ROAS). Pre-launch and GTM-into-new-market scenarios have **none of that** — every "current" value is zero by definition. Without a stage modifier, Bob ends up either fabricating numbers (which then become ★ everywhere) or manually rewriting column headers section-by-section. Both paths corrode output quality.
+The dashboard template defaults assume an operating brand in a market with measurable history (current MAU, last-year spend, brand tracker waves, prev-year ROAS). Pre-launch, GTM-into-new-market, and concept / pre-product scenarios have **none of that** — every "current" value is zero by definition. Without a stage modifier, Bob ends up either fabricating numbers (which then become ★ everywhere) or manually rewriting column headers section-by-section. Both paths corrode output quality.
 
-**Trigger.** Apply this modifier when ANY of these is true:
-- Q2 answer: `stage = launch` (first 12 months)
-- Q2 answer: `use case = GTM for new market`
-- Brand-existence sanity check at Step 1 returned "not currently in market"
+**Three trigger states (apply the modifier when ANY is true):**
+
+- **A. Launch** — Q2 answer: `stage = launch` (first 12 months). Product exists, brand exists, going to market. Some launch parameters known (launch date, fleet size, initial markets).
+- **B. GTM for new market** — Q2 answer: `use case = GTM for new market` OR brand-existence sanity check at Step 1 returned "not currently in market". Brand exists in other markets, entering a new one. Comparable-market benchmarks available.
+- **C. Concept / pre-product** — Q2 answer: `stage = concept`, `pre-product`, `pre-launch ideation`, OR use case = `MVP planning / concept validation / pre-funding strategy`. Product doesn't exist yet. May or may not have a brand name. Pure hypothesis territory anchored only on category research + customer-discovery interviews.
+
+The three states share the same philosophy (modify-and-fill, not replace structure) but differ in **how much can be grounded in real data** vs how much is admitted hypothesis. Launch has some real footing (the product is shipping). GTM borrows footing from other markets. Concept has only category research — most numbers are explicit hypotheses, and the document is best read as a "starting straw-man for funding / cofounder alignment", not an annual plan.
+
+**Concept-specific overrides (apply on top of A/B rules):**
+- `#brand-health` — full opt-out card with text "Pre-product — no brand exists yet. Tracker waves begin Q[N] post-launch. Benchmarks below are category challenger bands, calibrating ambition only." No Y1-target table (there's no incumbent comparison to anchor against unless category competitors are explicitly listed).
+- `#consumers` — segments framed as **personas from customer-discovery interviews**, not measured cohorts. Size estimates pulled from category data + TAM math, every segment `★` flagged. Voice quotes come from interview transcripts if the user uploaded them, otherwise standard ★.
+- `#business-goal` — table header becomes `Metric · Priority · Y1 (MVP) · Y2 (growth) · Y3 (scale) · Owner`. All numbers `★`. Y1 column represents "target by end of first 12 months from product launch", not calendar 2026.
+- `#mmm` — instead of a fixed envelope, the budget section shows a **range** with explicit "envelope TBD pending funding round / business case approval". Channel split is hypothesis-only, calibrated against comparable-stage / comparable-category mix. Include a note pointing to `#assumptions` for the funding-dependence assumption.
+- `#assumptions` — minimum **10 cards** (was 7 for launch). Concept stage rests almost entirely on assumptions; the document IS the assumption inventory.
+- `#risks` — emphasis on **product-market-fit risks** (will users actually want this?), **timing risks** (does category window stay open?), **funding risks** (do investors back the thesis?). Specific entry-market or supply-side risks become secondary.
+- `#product-initiatives` — flagships are **MVP feature blocks**, not product launches. Timeline reads Q1 = "MVP v1", Q2 = "first wave of features post-MVP", etc.
+- `#media` — no paid-media planning. Section covers community / waitlist / content / PR build-up pre-launch. Budget cells use the same "TBD pending funding" note.
+- `#references` — leans heavily on **category / customer-discovery research**, less on brand-specific sources (no brand exists). Add a line stating "Plan revisits after MVP launch + first cohort retention data."
 
 **Modifier philosophy — modify-and-fill, not replace.** The dashboard structure is the same regardless of stage. The modifier adapts what columns *mean* (rename headers, set baselines to zero, add framing labels) rather than removing sections or substituting opt-out cards. Empty placeholders read worse than honest "Y1 target vs incumbents" tables. Keep the visual scaffolding, change the semantics.
 

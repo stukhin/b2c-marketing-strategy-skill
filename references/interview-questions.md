@@ -8,10 +8,12 @@ Mode-aware question banks. Don't ask anything outside the spec. Asking too many 
 
 Always asked first, before any content questions. Combine both choices into ONE message to the user, not two separate turns:
 
-> "Pick a mode:
-> · **Fast draft** (~5 min, 2 questions)
-> · **Guided** (~15–20 min, 9 questions, can upload docs)
-> · **Deep interview** (~30–45 min, 22 questions, can upload docs)
+> "Pick a mode (interview times below — the full generation phase adds significant wall-clock on top):
+> · **Fast draft** — 2 questions, interview ~5 min, total run **up to 1 hour**
+> · **Guided** — 9 questions + optional doc upload, interview ~15–20 min, total run **a few hours**
+> · **Deep interview** — 22 questions + optional doc upload, interview ~30–45 min, total run **can take a full work day** (5–6h+, sometimes interrupted by rate limits on Pro)
+>
+> **My recommendation:** Mode 1 if this is your first run, OR you have about an hour, OR you don't have internal docs to upload. Mode 2 if you have a few hours AND at least one doc to share. Mode 3 only if you have a full day, multiple docs, and want consulting-grade depth.
 >
 > Output language: **English** (default) or **Russian**."
 
@@ -39,7 +41,7 @@ Then **parse uploaded content first**, then ask only the remaining questions who
 
 **Q2.** What's the use case for this strategy and what stage is the business at?
 - *Use case examples:* annual plan, investment pitch, brand re-launch, GTM for new market, internal alignment doc.
-- *Stage:* launch (first 12 months) / scale (growth phase) / mature (defending share) / decline (stabilising or rebuilding).
+- *Stage:* **concept** (product doesn't exist yet, MVP / pre-product / pre-funding planning) / **launch** (first 12 months post-product-shipping) / **scale** (growth phase) / **mature** (defending share) / **decline** (stabilising or rebuilding). The concept and launch stages auto-trigger the Stage modifier — most "current" values become Y1 targets or admitted hypotheses.
 
 After these 2 — proceed to Confirm + Research Sweep + Generate. ~70-80% of the doc will be hypothesis-marked ★.
 

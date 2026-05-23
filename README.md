@@ -99,17 +99,19 @@ You pick the output language at the start of the run: **English** (default) or *
 
 ## Token cost and wall-clock expectations
 
-A full run consumes more than the "200K tokens" headline suggests once you count Research Sweep, all 20 section edits, the self-check, and conversational overhead. Real numbers from production runs:
+A full run takes longer than the "5 minutes / 15-20 minutes / 30-45 minutes" mode-descriptor headline suggests. The mode-descriptor times refer to the **interview portion only** — the actual generation phase (Research Sweep, 20 section edits, self-check, JS sweep) adds hours on top, gated by web_search response times, rate-limit pauses, and permission prompts. Honest numbers from real tester runs:
 
-- Mode 1 (Fast): ≤ 200K tokens, **40–90 minutes** of wall clock (depends on web_search response times and permission prompts), roughly $1–2 via API
-- Mode 2 (Guided): ≤ 300K tokens, **60–120 minutes**
-- Mode 3 (Deep): ≤ 420K tokens, **90–180 minutes**
+| Mode | Token budget | Wall clock (interview + generation) | API cost (Sonnet) |
+|---|---|---|---|
+| Mode 1 (Fast) | ≤ 200K tokens | **up to 1 hour** | $1–2 |
+| Mode 2 (Guided) | ≤ 300K tokens | **a few hours** (2–4h typical) | $2–3 |
+| Mode 3 (Deep) | ≤ 420K tokens | **can run a full work day** (5–6h+, sometimes interrupted by rate limits) | $3–5 |
 
-**Pro subscription ($20/mo).** Mode 1 typically fits in a single 5-hour Pro window. Mode 2 fits if you don't have other Claude Code activity that day. **Mode 3 often hits the Pro limit mid-run** — Claude Code pauses and the run resumes after the 5-hour reset. If you need uninterrupted full runs, use the Max plan or Anthropic API directly.
+**Pro subscription ($20/mo).** Mode 1 fits in a single 5-hour Pro window. Mode 2 often hits the limit, pausing mid-run until the window resets. **Mode 3 reliably busts the Pro window** — expect to resume the next day or switch to the Max plan / Anthropic API for uninterrupted runs. Pro is fine for first runs and Mode 1; if you plan to run Mode 2/3 regularly, budget for Max.
 
 **Sonnet 4.6** is the right default for almost all runs — production-grade output, ~5× cheaper than Opus. **Opus 4.7** produces sharper synthesis sections (`#exec` / `#assumptions` / `#risks`) but burns Pro plan limits ~3× faster than Sonnet for the same run.
 
-**Tip for first-time testers:** start with Mode 1 to get the pipeline end-to-end in under an hour. Once you've seen what the skill produces, decide whether your specific brand/market merits a Mode 2 or Mode 3 follow-up.
+**Tip for first-time testers:** start with Mode 1 to get the pipeline end-to-end in about an hour. Once you've seen what the skill produces, decide whether your specific brand/market merits a Mode 2 or Mode 3 follow-up. Don't pick Mode 3 on day one — you'll lose a day before seeing your first output.
 
 ---
 

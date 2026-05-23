@@ -1,6 +1,6 @@
 # Audit rubric — scoring 0-100 per criterion
 
-For each of the 7 criteria in `audit-criteria.md`, score the document on a 0–100 scale using the bands below. Composite score = unweighted average across the criteria that apply for the chosen mode (5 in Quick score, 7 in Full audit).
+For each of the 7 criteria in `audit-criteria.md`, score the document on a 0–100 scale using the bands below. Composite score = unweighted average across the criteria that apply for the chosen mode: **avg of 6 in Quick score** (Reality check is skipped — 7 minus 1 leaves 6, not 5), **avg of 7 in Full audit**.
 
 ---
 

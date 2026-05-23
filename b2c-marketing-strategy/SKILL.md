@@ -73,12 +73,14 @@ If you notice a high-value source outside the catalog (recent regulator news, br
 
 1. Copy `references/dashboard-template.html` → `output/<brand>-<market>-v1.html` (one Bash command).
 
-2. **HEADER FIRST.** Before any section work, fill these three slots — they fail silently otherwise (browser tab + page heading carry the placeholder):
+2. **Read the output file** (with `Read` tool) **before the first Edit.** Claude Code's `Edit` tool refuses to operate on a file it hasn't seen yet — `cp` doesn't register with the tool's file-state tracker. One single `Read` of the first ~20 lines of the new output file is enough to unlock subsequent Edits on it. Skip this and the first Edit fails with "file not read yet". Catches many first-time runs.
+
+3. **HEADER FIRST.** Before any section work, fill these three slots — they fail silently otherwise (browser tab + page heading carry the placeholder):
    - `<title>` tag — `[Brand + Market] — Marketing Strategy [Year]`
    - `.doc-title-main` — `[Brand + Market]`
    - `.doc-title-sub` — `Marketing Strategy [Year]`
 
-3. Edit the body section by section in this fixed wave order:
+4. Edit the body section by section in this fixed wave order:
 
 ```
 Wave 1 — Context     market → consumers → competitors → brand-health → swot

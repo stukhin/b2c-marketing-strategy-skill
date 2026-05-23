@@ -27,7 +27,7 @@ These are **starting frameworks**. Real businesses deviate — adjust based on u
 | 15 | Travel / OTA | Booking, Expedia, Airbnb | `presets/travel.md` |
 | 16 | Media / content / publishing | The Athletic, Substack, Bloomberg consumer, Vox Media | `presets/media-content.md` |
 
-## Outside the 15
+## Outside the 16
 
 - **Adjacent / partial coverage** (telemed, insurtech, dating, gaming, social/UGC, crypto) — see `presets/adjacent.md`
 - **First-principles fallback** for everything else — see `presets/fallback.md`

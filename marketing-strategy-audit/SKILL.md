@@ -35,10 +35,10 @@ Ask the user to pick **two things in one prompt**:
 
 Ask the user to attach the document(s). Accept these formats: **PDF, PPTX, DOCX, plain text / Markdown**. Multiple files in one run are fine — the skill cross-references them in Step 4.
 
-Then ask two short context questions (don't skip — without these, Reality check and Strategic alternatives are weaker):
+Then ask two short context questions, but **skip what the user already told you**. If the user named the brand+market or the category in their Step 0 message (e.g. "audit my Spravochnaya strategy in Russia"), don't re-ask the same thing — just confirm in one line ("Got it, brand=Spravochnaya, category=media") and only ask the missing piece. The point is to capture context, not to interrogate.
 
-- **What brand and market is this strategy for?** (helps Reality check via web_search)
-- **What category is the brand in?** (helps Strategic alternatives via category presets in the parallel `b2c-marketing-strategy` skill if available, or via Research Sweep otherwise)
+- **What brand and market is this strategy for?** (helps Reality check via web_search) — ask only if unknown from Step 0
+- **What category is the brand in?** (helps Strategic alternatives via category presets in the parallel `b2c-marketing-strategy` skill if available, or via Research Sweep otherwise) — ask only if unknown from Step 0
 
 **Do not scan the user's filesystem.** Only parse the files the user explicitly attached or named with a path. Same rule as in the main skill — no opening Downloads / Documents speculatively.
 
@@ -99,7 +99,17 @@ One parallel batch. Findings feed into Steps 6.
 
 ### Step 6 — Generate HTML dashboard
 
-Copy `references/audit-dashboard-template.html` to `output/<brand>-audit-v1.html` (or `<short-doc-name>-audit-v1.html` if no clear brand from context). Fill 8 sections:
+Copy the template into the output folder via Bash:
+
+```bash
+cp references/audit-dashboard-template.html output/<brand>-audit-v1.html
+```
+
+(or `<short-doc-name>-audit-v1.html` if no clear brand from context).
+
+**Then `Read` the output file once** (first ~20 lines is enough) before the first `Edit`. Same constraint as the main skill — Claude Code's `Edit` tool refuses to operate on a file it hasn't seen yet. `cp` doesn't register with the tool's file-state tracker. Without this `Read`, the first Edit fails with "file not read yet".
+
+Fill 8 sections:
 
 1. **Header** — file name(s) audited + brand + category + mode + date
 2. **Score summary** — 7 criteria × score 0–100 each + overall composite + 1-sentence headline (e.g. "strong synthesis, weak risk register, gaping data hole on consumer")
@@ -137,7 +147,7 @@ Same plate system as the main skill:
 ## Per-section content notes
 
 - **#header** — file name(s) audited + brand + category context + mode + audit date. Keep concise, 4 lines max.
-- **#score-summary** — Composite score is unweighted average of the 7 criteria (in Quick score, only 5 contribute since Reality check is skipped, so composite = avg of 5). One-sentence headline must name the dominant pattern: "synthesis-strong, risk-weak", "data-rich but specificity-poor", etc.
+- **#score-summary** — Composite score is unweighted average of the criteria that apply. Full audit: avg of 7. Quick score: avg of **6** (Reality check is skipped — 7 minus 1 leaves 6, not 5). One-sentence headline must name the dominant pattern: "synthesis-strong, risk-weak", "data-rich but specificity-poor", etc.
 - **#gap-list** — group by criterion. Within criterion, order by priority (high → low). 3–8 gaps per criterion is typical; if a criterion has 12+ gaps, the document is probably very weak there — note that explicitly.
 - **#recommendations** *(Full audit)* — one rec per high-priority gap. Action-verb led ("Add risk register section with..."), 2-line max each.
 - **#beyond-the-document** — 5–9 insight cards, grouped by type. Each card: 1-line finding + 1-line why-it-matters + 1-line action. Most-impactful insight goes first.

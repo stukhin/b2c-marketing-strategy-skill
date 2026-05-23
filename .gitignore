@@ -9,12 +9,16 @@
 *.swo
 *~
 
-# Logs
-*.log
+# Claude Code project config (local)
+.claude/
 
-# Build artefacts (the .skill archive is built locally and attached to GitHub Releases)
+# Build artefacts — .skill archives are attached to GitHub Releases, not committed
 *.skill
 
-# Local test outputs
+# Internal-history archive — preserved locally but not published
+archive/
+
+# Local test outputs that live at the project root
+/*-v1.html
+/output/
 output/
-test-outputs/

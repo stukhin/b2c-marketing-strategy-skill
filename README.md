@@ -47,35 +47,47 @@ One-time setup, then runs proceed without interruptions.
 
 ## What the output looks like
 
-Screenshots from a real Fast-mode run — Chowdeck (Nigerian food delivery) 2026 strategy. Same dashboard, different sections.
+Screenshots from a real Fast-mode run — a food delivery brand strategy. Same dashboard, different sections.
 
-### 1 · Consumer segmentation
+### 1 · Executive summary
 
-![Consumer segmentation — donut charts + segment cards with sensitivities, voice quotes, brand chips](./docs/screenshots/01-consumers.png)
+![Executive summary — purpose, northstar, market context, 4 structural asymmetries](./docs/screenshots/01-executive-summary.png)
 
-Revenue / GMV share and audience share donuts auto-derive from the segment-card data below. Each card carries reach %, sensitivities, voice-of-customer quote, preferred competitors, primary channels. Up to 8 segments in horizontal scroller.
+Landing view of the dashboard. Purpose-of-document + northstar block, then market context with hard numbers and the 4 structural asymmetries shaping the year's play.
 
-### 2 · Brand pyramid + positioning maps
+### 2 · Key objectives
 
-![Brand pyramid 5 tiers + 2 positioning maps with competitor dots](./docs/screenshots/02-brand-pyramid.png)
+![Three key objectives for the year — MAU, GMV, paid subscribers](./docs/screenshots/02-key-objectives.png)
+
+Three hero metrics that define what success looks like. Locked to exactly 3 tiles as a forcing function — if you can't pick 3, you don't have a plan, you have a wishlist.
+
+### 3 · Consumer segmentation
+
+![External segmentation — donut charts + segment cards with sensitivities, voice quotes, brand chips](./docs/screenshots/03-external-segmentation.png)
+
+Revenue / GMV share and audience share donuts auto-derive from segment-card data below. Each card carries reach %, sensitivities, voice-of-customer quote, preferred competitors, primary channels. Up to 8 segments in a horizontal scroller.
+
+### 4 · Brand pyramid + positioning maps
+
+![Brand pyramid 5 tiers + 2 positioning maps with competitor dots](./docs/screenshots/04-brand-pyramid.png)
 
 Purpose → Essence → Personality → RTBs → Features hierarchy, plus functional + emotional positioning maps with competitor placement.
 
-### 3 · Competitive landscape
+### 5 · Competitive landscape
 
-![Indirect competitors table — Bolt rides, Jumia, WhatsApp, Shoprite with overlap analysis](./docs/screenshots/03-competitors.png)
+![Indirect competitors table with logos, app ratings, overlap analysis, strategic risk per rival](./docs/screenshots/05-indirect-competitors.png)
 
 Direct + indirect competitor tables with sticky first column, parameter-by-parameter comparison, app ratings, monetization model, strategic risk per rival.
 
-### 4 · Media plan
+### 6 · Media plan
 
-![Channel overview table with chip system + sidebar theme switcher](./docs/screenshots/04-channel-overview.png)
+![Channel overview table with chip system + sidebar theme switcher](./docs/screenshots/06-channel-overview.png)
 
-10+ channel rows with reach, funnel stage, KPI, and Plan-2026 direction chip (↑ Increase / → Hold / ↓ Decrease). Theme switcher visible in left sidebar — 4 themes flip instantly via View Transitions API.
+10+ channel rows with reach, funnel stage, KPI, and Plan-direction chip (↑ Increase / → Hold / ↓ Decrease). Theme switcher visible in left sidebar — 4 themes flip instantly via View Transitions API.
 
-### 5 · Assumptions + KPI tiles
+### 7 · Assumptions + market KPI tiles
 
-![Assumptions cards with confidence levels + market KPI tiles](./docs/screenshots/05-assumptions.png)
+![Assumptions cards with confidence levels + market KPI tiles](./docs/screenshots/07-assumptions.png)
 
 3-tier confidence cards (High / Medium / Low) anchor what the year is betting on. Each card carries claim + leading signal + trigger (collapsed by default, click to expand). Market KPI tiles below show 4 macro signals with mini-charts.
 

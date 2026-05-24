@@ -22,7 +22,104 @@
     --shadow-xs: none;
     --shadow-sm: none;
     --shadow-md: none;
+
+    /* === Unified semantic tone tokens — drive all chip families (.tag, .kano, .mkt-prio, .cluster-pill, .dir, .plan, .comm-matrix funnel rows).
+       Each tone maps to existing --semantic-* vars so theme overrides flow through automatically.
+       Tone meanings:
+         ok      = positive signal / increase / growth / delight    (green)
+         warn    = caution / medium / emerging / build              (amber)
+         crit    = urgent / high priority / decrease / must-have    (red)
+         info    = stable / category / core                         (blue)
+         neutral = low priority / indifferent / probe / hold        (grey)
+    */
+    --tone-ok:        var(--semantic-success);
+    --tone-ok-bg:     var(--semantic-success-bg);
+    --tone-ok-border: var(--semantic-success-border);
+    --tone-warn:        var(--semantic-warning);
+    --tone-warn-bg:     var(--semantic-warning-bg);
+    --tone-warn-border: var(--semantic-warning-border);
+    --tone-crit:        var(--semantic-danger);
+    --tone-crit-bg:     var(--semantic-danger-bg);
+    --tone-crit-border: var(--semantic-danger-border);
+    --tone-info:        var(--semantic-info);
+    --tone-info-bg:     var(--semantic-info-bg);
+    --tone-info-border: var(--semantic-info-border);
+    --tone-neutral:        var(--text-mute);
+    --tone-neutral-bg:     var(--bg-subtle);
+    --tone-neutral-border: var(--border);
   }
+
+  /* === Unified chip base ===
+     Shared by .tag, .kano, .mkt-prio, .cluster-pill, .dir, .plan.
+     Single source of truth for padding / radius / font-size / weight / line-height.
+     Each chip family then adds its own .tone variant via --tone-* tokens. */
+  .tag, .kano, .mkt-prio, .cluster-pill, .dir, .plan {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .dir, .plan { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* === View Transitions API — smooth crossfade between themes ===
+     Native browser API. setTheme() wraps work in document.startViewTransition(),
+     browser captures old + new DOM states and crossfades them automatically.
+     Falls back to instant change on unsupported browsers (Safari <18, old Firefox). */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+  ::view-transition-old(root) { animation-name: theme-fade-out; }
+  ::view-transition-new(root) { animation-name: theme-fade-in; }
+  @keyframes theme-fade-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes theme-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation: none; }
+  }
+
+  /* === Smooth collapsibles ===
+     Native <details> elements animate via interpolate-size (Chrome 129+, Edge 129+).
+     Graceful skip on older browsers — content still expands instantly. */
+  @supports (interpolate-size: allow-keywords) {
+    :root { interpolate-size: allow-keywords; }
+    details::details-content {
+      block-size: 0;
+      overflow: clip;
+      opacity: 0;
+      transition: block-size 0.35s ease, opacity 0.25s ease, content-visibility 0.35s allow-discrete;
+    }
+    details[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+  /* Chevron rotation (works in all browsers) */
+  details > summary .assumption-chevron,
+  details.flagship-card > summary svg {
+    transition: transform 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  /* === Scroll hint — subtle text under horizontally-scrollable tables ===
+     Indicates more content is to the right when the table overflows the viewport. */
+  .scroll-hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    margin: -8px 0 14px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    line-height: 1.4;
+    user-select: none;
+  }
+  .scroll-hint::before { content: "← "; color: var(--text-ghost); margin-right: 6px; }
+  .scroll-hint::after  { content: " →"; color: var(--text-ghost); margin-left: 6px; }
 
   :root[data-theme="vichy"] {
     /* Brand */
@@ -1115,7 +1212,7 @@
   }
   table.apx th {
     font-weight: 600;
-    color: var(--text-soft);
+    color: var(--text-mute);          /* was --text-soft — unified with .head2head + .q-table to muted tone for consistent quiet headers */
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -1136,20 +1233,11 @@
   table.apx td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
   table.apx td.highlight { background: var(--accent-soft); }
 
-  /* Priority tags */
-  .tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-  }
-  .tag.high { background: var(--semantic-success-bg); color: var(--semantic-success); }
-  .tag.med { background: var(--semantic-warning-bg); color: var(--semantic-warning); }
-  .tag.low { background: var(--semantic-danger-bg); color: var(--semantic-danger); }
-  .tag.neutral { background: var(--bg-subtle); color: var(--text-mute); }
+  /* .tag — priority tier (high/med/low/neutral). Base styles in unified chip base at top. */
+  .tag.high    { background: var(--tone-crit-bg);    color: var(--tone-crit);    border-color: var(--tone-crit-border); }
+  .tag.med     { background: var(--tone-warn-bg);    color: var(--tone-warn);    border-color: var(--tone-warn-border); }
+  .tag.low     { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
+  .tag.neutral { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
 
   /* Hypothesis-baseline badge (20th pass) — render under section heading when entire section
      is built on hypothesis values rather than verified data (Brand health when no tracker data,
@@ -1265,15 +1353,16 @@
   .assumption-card[data-confidence="low"] .assumption-stripe { background: var(--semantic-danger); }
   .assumption-num {
     display: flex;
-    align-items: flex-start;
+    align-items: center;          /* center vertically with claim text — no more "jumping" across 1- vs 2-line claims */
     justify-content: center;
-    padding: 18px 0 0;
+    padding: 0;                   /* vertical centering does the alignment job */
     font-family: var(--font-display);
     font-size: 22px;
     font-weight: 700;
     color: var(--text-faint);
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
   .assumption-body {
     padding: 18px 22px 16px 8px;
@@ -1453,41 +1542,9 @@
   }
   .info-tip:hover::after, .info-tip:hover::before { opacity: 1; }
 
-  /* Add-more stub (inline invitation to extend) */
-  .add-more {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 22px;
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px dashed var(--border-strong);
-    border-radius: var(--radius-md);
-    color: var(--text-faint);
-    font-size: 13px;
-    font-style: italic;
-    letter-spacing: -0.005em;
-    cursor: default;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  }
-  .add-more:hover {
-    background: rgba(255, 255, 255, 0.65);
-    color: var(--text-mute);
-    border-color: var(--accent);
-  }
-  .add-more-num {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-ghost);
-    letter-spacing: -0.03em;
-    font-style: normal;
-  }
-  .add-more-plus {
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--text-ghost);
-    font-style: normal;
-  }
+  /* .add-more CSS removed in v1.4.0 — HTML usage was removed in v1.3.1 (no "Add another assumption" stub anymore).
+     The class selector in the copy/print sanitizer JS (.querySelectorAll('... .add-more ...')) is left as defensive code
+     in case any legacy generated dashboards still contain the class — it's a no-op when the class isn't present. */
 
   /* Budget split bar */
   .budget-total-card {
@@ -2465,21 +2522,11 @@
   }
 
   /* Directional tags with outline */
-  .dir {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 9px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-  .dir.stable { background: var(--semantic-info-bg); color: var(--semantic-info); border-color: var(--semantic-info-border); }
-  .dir.strong { background: var(--semantic-success-bg); color: var(--semantic-success); border-color: var(--semantic-success-border); }
-  .dir.emerging { background: var(--semantic-warning-bg); color: var(--semantic-warning); border-color: var(--semantic-warning-border); }
-  .dir.downside { background: var(--semantic-danger-bg); color: var(--semantic-danger); border-color: var(--semantic-danger-border); }
+  /* .dir — trend direction. Base styles in unified chip base at top. */
+  .dir.strong   { background: var(--tone-ok-bg);   color: var(--tone-ok);   border-color: var(--tone-ok-border); }
+  .dir.stable   { background: var(--tone-info-bg); color: var(--tone-info); border-color: var(--tone-info-border); }
+  .dir.emerging { background: var(--tone-warn-bg); color: var(--tone-warn); border-color: var(--tone-warn-border); }
+  .dir.downside { background: var(--tone-crit-bg); color: var(--tone-crit); border-color: var(--tone-crit-border); }
   .dir-arrow { font-size: 9px; }
 
   /* Sensitivity scale dots */
@@ -3370,31 +3417,16 @@
 
   /* Marketing priority pill for roadmap features */
   .mkt-prio {
-    display: inline-block;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 5px;
-    white-space: nowrap;
-  }
-  .mkt-prio.high { background: var(--accent-bg); color: var(--accent); }
-  .mkt-prio.med { background: var(--semantic-warning-bg); color: var(--semantic-warning); }
-  .mkt-prio.low { background: var(--bg-subtle); color: var(--text-mute); }
+  /* .mkt-prio — marketing priority on product roadmap. Base styles in unified chip base at top. */
+  .mkt-prio.high { background: var(--tone-crit-bg);    color: var(--tone-crit);    border-color: var(--tone-crit-border); }
+  .mkt-prio.med  { background: var(--tone-warn-bg);    color: var(--tone-warn);    border-color: var(--tone-warn-border); }
+  .mkt-prio.low  { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
 
-  /* Regional cluster pills + channel chip rows */
-  .cluster-pill {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 9px;
-    border-radius: 5px;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-  }
-  .cluster-pill.c1 { background: var(--accent-bg); color: var(--accent); }
-  .cluster-pill.c2 { background: var(--semantic-success-bg); color: var(--semantic-success); }
-  .cluster-pill.c3 { background: var(--semantic-warning-bg); color: var(--semantic-warning); }
-  .cluster-pill.c4 { background: var(--bg-subtle); color: var(--text-mute); }
+  /* .cluster-pill — regional clusters (Core / Expansion / Build / Probe). Base styles in unified chip base at top. */
+  .cluster-pill.c1 { background: var(--tone-info-bg);    color: var(--tone-info);    border-color: var(--tone-info-border); }
+  .cluster-pill.c2 { background: var(--tone-ok-bg);      color: var(--tone-ok);      border-color: var(--tone-ok-border); }
+  .cluster-pill.c3 { background: var(--tone-warn-bg);    color: var(--tone-warn);    border-color: var(--tone-warn-border); }
+  .cluster-pill.c4 { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
 
   .chan-chips {
     display: flex;
@@ -3528,34 +3560,39 @@
     background: var(--border-strong);
     border-radius: 4px;
   }
+  /* .head2head — unified with table.apx base.
+     Differences kept: centered headers (semantic — they show logo + col-title block).
+     Differences DROPPED: border-collapse separate (was accidental), font-size 12.5px (was 0.5px off),
+     thead padding 14×12×12 (was inconsistent with .apx 12×14). */
   .head2head {
     width: 100%;
     min-width: 820px;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;        /* was: separate */
     background: transparent;
-    font-size: 12.5px;
+    font-size: 13px;                  /* was: 12.5px */
   }
   .head2head th, .head2head td {
     padding: 12px 14px;
     text-align: left;
     border-bottom: 1px solid var(--border);
     vertical-align: top;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
   }
   .head2head thead th {
     background: var(--table-header-bg);
     font-weight: 600;
     font-size: 11px;
-    color: var(--text-soft);
+    color: var(--text-mute);          /* unified with .apx — muted, not soft */
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    text-align: center;
-    padding: 14px 12px 12px;
+    text-align: center;               /* h2h-specific — column headers carry logo block */
+    padding: 12px 14px;               /* was: 14×12×12 — now matches .apx */
     border-bottom: 1px solid var(--border);
   }
   .head2head thead th.param-head {
     text-align: left;
-    padding: 14px 14px 12px;
+    padding: 12px 14px;               /* was: 14×14×12 — unified */
   }
   .h2h-logo {
     display: flex;
@@ -3571,7 +3608,7 @@
   .h2h-col-title {
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-soft);
+    color: var(--text-mute);          /* unified — header col-title in h2h uses muted tone */
     text-transform: uppercase;
     letter-spacing: 0.04em;
     text-align: center;
@@ -3839,7 +3876,7 @@
   }
   .comm-matrix thead th {
     padding: 12px 12px;
-    font-size: 12px;
+    font-size: 13px;                  /* unified with other tables */
     font-weight: 700;
     letter-spacing: -0.005em;
     text-align: center;
@@ -3849,14 +3886,20 @@
   }
   .comm-matrix thead th.row-label-head {
     background: var(--bg-subtle);
-    /* Mask: extend bg-subtle 14px right so segment cells scroll cleanly behind the unified column */
-    box-shadow: 14px 0 0 var(--bg-subtle);
+    /* Mask: extend bg-subtle just enough to bridge border-spacing gaps (6px right + 6px down).
+       More than 6px right would eat into the first segment column's left edge. */
+    box-shadow: 6px 0 0 var(--bg-subtle), 0 6px 0 var(--bg-subtle);
     border-radius: 0; width: 180px;
     position: sticky; left: 0; z-index: 5;
   }
   .comm-matrix td.row-label {
     position: sticky; left: 0; z-index: 5;
-    box-shadow: 14px 0 0 var(--bg-subtle);
+    /* Bridge the border-spacing gaps above + below + right (adjacent row-labels meet and form one filled column).
+       Right extension capped at 6px so the first content column's rounded corner isn't clipped. */
+    box-shadow:
+      6px 0 0 var(--bg-subtle),
+      0 -3px 0 var(--bg-subtle),
+      0 3px 0 var(--bg-subtle);
   }
   .comm-matrix thead th.seg { width: 220px; background: var(--bg-subtle); }
   .comm-matrix thead th.seg .comm-seg-emoji { font-size: 20px; display: block; margin-bottom: 4px; }
@@ -3873,11 +3916,11 @@
     background: var(--bg-subtle);
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-soft);
+    color: var(--text-mute);          /* unified with other table headers (muted tone) */
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;           /* unified with other table headers */
     padding: 12px 14px;
-    border-radius: 10px;
+    border-radius: 0;                 /* removed — left column reads as a single continuous bar instead of separate cards */
     vertical-align: top;
   }
   .comm-matrix td.row-label .row-icon {
@@ -3891,7 +3934,7 @@
   }
   .comm-matrix td.row-label .row-icon svg {
     width: 14px; height: 14px;
-    stroke: var(--text-soft);
+    stroke: var(--text-mute);         /* match row-label color */
     fill: none;
     stroke-width: 1.8;
     stroke-linecap: round;
@@ -3899,7 +3942,7 @@
   }
   .comm-matrix td.cell {
     padding: 12px 14px;
-    font-size: 12.5px;
+    font-size: 13px;                  /* unified with other tables */
     line-height: 1.4;
     vertical-align: top;
     border-radius: 10px;
@@ -3907,6 +3950,8 @@
     background: var(--bg-solid);
     border: 1px solid var(--border);
   }
+  /* Row backgrounds — theme-tokened (was hardcoded steel-blue + steel-orange RGBA).
+     Funnel stages map to tones: upper=accent (brand-led), mid=info (consideration calm), lower=warn (action CTA). */
   .comm-matrix tr.upper td.cell {
     background: var(--accent-soft);
     border-color: var(--accent-bg);
@@ -3916,14 +3961,14 @@
     letter-spacing: -0.012em;
   }
   .comm-matrix tr.mid td.cell {
-    background: rgba(61, 85, 122, 0.05);
-    border-color: rgba(61, 85, 122, 0.15);
+    background: var(--tone-info-bg);      /* was hardcoded steel-blue rgba — now theme-aware */
+    border-color: var(--tone-info-border);
     font-weight: 500;
     color: var(--text);
   }
   .comm-matrix tr.lower td.cell {
-    background: rgba(196, 128, 51, 0.05);
-    border-color: rgba(196, 128, 51, 0.18);
+    background: var(--tone-warn-bg);      /* was hardcoded steel-orange rgba — now theme-aware */
+    border-color: var(--tone-warn-border);
     font-weight: 500;
     color: var(--text);
   }
@@ -3956,14 +4001,14 @@
     content: "+";
     position: absolute;
     left: 2px;
-    color: var(--semantic-success);
+    color: var(--tone-ok);            /* unified tone token */
     font-weight: 700;
   }
   .comm-matrix tr.avoid td.cell ul li::before {
     content: "\2715";
     position: absolute;
     left: 2px;
-    color: var(--semantic-danger);
+    color: var(--tone-crit);          /* unified tone token */
     font-weight: 700;
     font-size: 11px;
   }
@@ -4421,35 +4466,16 @@
   }
   .pyramid-content strong { color: var(--text); font-weight: 600; }
 
-  /* KANO badge */
-  .kano {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .kano.must { background: var(--semantic-danger-bg); color: var(--semantic-danger); }
-  .kano.perf { background: var(--semantic-info-bg); color: var(--semantic-info); }
-  .kano.delight { background: var(--semantic-info-bg); color: var(--semantic-info); }
-  .kano.indiff { background: var(--bg-subtle); color: var(--text-mute); }
+  /* .kano — KANO category (must/perf/delight/indiff). Base styles in unified chip base at top. */
+  .kano.must    { background: var(--tone-crit-bg);    color: var(--tone-crit);    border-color: var(--tone-crit-border); }
+  .kano.perf    { background: var(--tone-info-bg);    color: var(--tone-info);    border-color: var(--tone-info-border); }
+  .kano.delight { background: var(--tone-ok-bg);      color: var(--tone-ok);      border-color: var(--tone-ok-border); }
+  .kano.indiff  { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
 
-  /* Plan arrow (increase/hold/decrease) */
-  .plan {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 9px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-  .plan.up { background: var(--semantic-success-bg); color: var(--semantic-success); border-color: var(--semantic-success-border); }
-  .plan.hold { background: var(--semantic-info-bg); color: var(--semantic-info); border-color: var(--semantic-info-border); }
-  .plan.down { background: var(--semantic-danger-bg); color: var(--semantic-danger); border-color: var(--semantic-danger-border); }
+  /* .plan — channel plan direction (up/hold/down). Base styles in unified chip base at top. */
+  .plan.up   { background: var(--tone-ok-bg);      color: var(--tone-ok);      border-color: var(--tone-ok-border); }
+  .plan.hold { background: var(--tone-neutral-bg); color: var(--tone-neutral); border-color: var(--tone-neutral-border); }
+  .plan.down { background: var(--tone-crit-bg);    color: var(--tone-crit);    border-color: var(--tone-crit-border); }
 
   /* Quarterly communication grid */
   .q-grid {
@@ -4476,7 +4502,7 @@
   .q-table th {
     background: var(--table-header-bg);
     font-weight: 600;
-    color: var(--text-soft);
+    color: var(--text-mute);          /* unified with .apx + .head2head — muted, not soft */
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -6687,6 +6713,7 @@
           </tbody>
         </table>
       </div>
+      <div class="scroll-hint">Scroll horizontally to see all segments</div>
     </section>
 
     <section id="product-initiatives">
@@ -9488,26 +9515,36 @@
   const themeLabels = { steel: 'Steel', vichy: 'Vichy', opaline: 'Opaline', mono: 'Mono' };
 
   function setTheme(name) {
-    document.documentElement.setAttribute('data-theme', name);
-    const label = document.getElementById('themeLabel');
-    if (label) label.textContent = themeLabels[name];
-    // Destroy and rebuild charts with new palette
-    chartInstances.forEach(c => { try { c.destroy(); } catch(e){} });
-    chartInstances.length = 0;
-    buildAllCharts();
-    // Re-wire switcher since buildAllCharts rebuilt brandTrendChart
-    wireBrandMetricChips();
-    // Restore chart to whichever metric is currently active
-    const activeChip = document.querySelector('#brandMetricChips .metric-chip.active');
-    if (activeChip && brandTrendChart) {
-      const key = activeChip.dataset.metric;
-      const d = BRAND_TREND_DATA[key];
-      if (d) {
-        brandTrendChart.data.datasets[0].data = d.primary;
-        brandTrendChart.data.datasets[1].data = d.comp1;
-        brandTrendChart.data.datasets[2].data = d.comp2;
-        brandTrendChart.update();
+    // Inner function does the actual work; wrapped below in View Transitions API
+    // for smooth crossfade on supporting browsers (Chrome 111+, Edge 111+, Safari 18+).
+    const apply = () => {
+      document.documentElement.setAttribute('data-theme', name);
+      const label = document.getElementById('themeLabel');
+      if (label) label.textContent = themeLabels[name];
+      // Destroy and rebuild charts with new palette
+      chartInstances.forEach(c => { try { c.destroy(); } catch(e){} });
+      chartInstances.length = 0;
+      buildAllCharts();
+      // Re-wire switcher since buildAllCharts rebuilt brandTrendChart
+      wireBrandMetricChips();
+      // Restore chart to whichever metric is currently active
+      const activeChip = document.querySelector('#brandMetricChips .metric-chip.active');
+      if (activeChip && brandTrendChart) {
+        const key = activeChip.dataset.metric;
+        const d = BRAND_TREND_DATA[key];
+        if (d) {
+          brandTrendChart.data.datasets[0].data = d.primary;
+          brandTrendChart.data.datasets[1].data = d.comp1;
+          brandTrendChart.data.datasets[2].data = d.comp2;
+          brandTrendChart.update();
+        }
       }
+    };
+    // View Transitions API — smooth crossfade between themes if supported.
+    if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.startViewTransition(apply);
+    } else {
+      apply();
     }
   }
 

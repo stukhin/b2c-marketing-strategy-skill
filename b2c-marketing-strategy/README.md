@@ -109,7 +109,17 @@ A full run takes longer than the "5 minutes / 15-20 minutes / 30-45 minutes" mod
 | Mode 2 (Guided) | ≤ 300K tokens | **a few hours** (2–4h typical) | $2–3 |
 | Mode 3 (Deep) | ≤ 420K tokens | **can run a full work day** (5–6h+, sometimes interrupted by rate limits) | $3–5 |
 
-**Pro subscription ($20/mo).** Mode 1 fits in a single 5-hour Pro window. Mode 2 often hits the limit, pausing mid-run until the window resets. **Mode 3 reliably busts the Pro window** — expect to resume the next day or switch to the Max plan / Anthropic API for uninterrupted runs. Pro is fine for first runs and Mode 1; if you plan to run Mode 2/3 regularly, budget for Max.
+**Which Claude plan you actually need — honest version from real tester feedback:**
+
+| Plan | Cost | Realistic use |
+|---|---|---|
+| Free Claude Code | $0 | ❌ Won't complete a single run — no skill-running budget. |
+| Pro | $20 / mo | ⚠️ Tight. A single Mode 1 attempt sometimes fits the 5-hour window, but iteration (a second run same day, or retries after errors) drains the window. Mode 2 / Mode 3 routinely bust the limit. |
+| **Max — $100 / mo** | $100 / mo | ✅ **Realistic minimum for comfortable use.** Mode 1 + iteration comfortable. Mode 2 single-session feasible. |
+| Max — $200 / mo (20×) | $200 / mo | ✅✅ Mode 2 / Mode 3 single-session comfortable, multiple iterations per day. |
+| Anthropic API direct | Pay per token | ✅ No daily limits. Per-run API cost ~$1-5 with Sonnet 4.6. Best for unlimited / programmatic use. |
+
+If you only want to try the skill once to see what it produces, Pro is OK for a single Mode 1 attempt (cheap to try, might still hit the wall). **For regular use, budget for Max $100/mo as the floor.**
 
 **Sonnet 4.6** is the right default for almost all runs — production-grade output, ~5× cheaper than Opus. **Opus 4.7** produces sharper synthesis sections (`#exec` / `#assumptions` / `#risks`) but burns Pro plan limits ~3× faster than Sonnet for the same run.
 

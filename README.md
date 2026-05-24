@@ -45,6 +45,22 @@ One-time setup, then runs proceed without interruptions.
 
 ---
 
+## Subscription reality — which Claude plan can run this skill
+
+Honest guidance from real tester runs. A "full skill run" means interview → research sweep → 20-section dashboard → self-check → ready to share.
+
+| Plan | Cost | Realistic skill usage |
+|---|---|---|
+| **Free Claude Code** | $0 | ❌ **Won't complete a single run.** No skill-running budget — the run will pause / fail before finishing the dashboard. |
+| **Pro** | $20 / mo | ⚠️ **Tight.** A single Mode 1 run sometimes fits the 5-hour rolling window, but iteration (a second run on the same day, or retries after errors) drains the window. Mode 2 / Mode 3 routinely bust the limit and resume the next day. |
+| **Max — $100 / mo** | $100 / mo | ✅ **Realistic minimum for comfortable use.** Mode 1 + iteration comfortable. Mode 2 single-session feasible. |
+| **Max — $200 / mo (20×)** | $200 / mo | ✅✅ **Best for active use.** Mode 2 / Mode 3 single-session comfortable, multiple iterations per day. |
+| **API direct** (Anthropic API) | Pay per token | ✅ No daily limits. Per-run API cost ~$1-5 with Sonnet 4.6. Best if you're running this often or building automation on top. |
+
+If you only want to try the skill once to see what it produces — Pro is OK for a single Mode 1 attempt (might still hit limits, but cheap to try). **If you plan to use this regularly, budget for Max $100/mo as the realistic floor.**
+
+---
+
 ## What the output looks like
 
 Screenshots from a real Fast-mode run — a food delivery brand strategy. Same dashboard, different sections.
@@ -105,6 +121,33 @@ Direct + indirect competitor tables with sticky first column, parameter-by-param
 Every fact-looking number is plated: blue dot for verified external source (with T1/T2/T3 tier), `★` for hypothesis, `[to be confirmed]` for internal-only fact only you can provide. Nothing reads as fact without a source plate.
 
 For wall-clock time + token cost expectations + Pro vs Max plan guidance, see the [skill-specific README](./b2c-marketing-strategy/README.md#token-cost-and-wall-clock-expectations).
+
+---
+
+## What this is — and what it isn't
+
+**This skill IS:**
+
+- A **structured first pass** at an annual marketing strategy doc — covers every section a CMO would expect (market, segmentation, competitors, brand pyramid, positioning, media plan, MMM, risk register, etc.) so you don't skip anything.
+- A **scaffolding** for an annual planning workshop. Saves the 2-3 weeks usually spent structuring the doc and gathering baseline data.
+- A **sounding board for hypotheses**. Every claim is marked verified / hypothesis / to-be-confirmed — so you can argue with the document rather than start from a blank page.
+- An **adaptive starting point**. The skill works with whatever data you can provide — public coverage only (Fast), one internal doc (Guided), full document upload (Deep). Hypothesis density scales with what you feed it.
+
+**This skill IS NOT:**
+
+- A **replacement for strategy work itself**. Final positioning, brand pyramid, creative direction, year-defining bets still need human creative + workshop input. The skill proposes a default; the team picks.
+- A source of **validated market data**. Hypothesis-marked numbers (`★`) are the AI's best guess from public research — they **must be calibrated** against your team's actuals before being shared externally.
+- A substitute for **specialist work**. Real brand-tracker waves, qualitative segmentation studies, MMM models, creative testing, financial planning — all still need their respective teams. The skill makes a first-cut hypothesis the specialists can validate or replace.
+- A **finished, board-ready document**. Treat the output as a draft for internal review, not a strategy ready to present without human editing.
+
+**Best used as:**
+
+- Pre-work for an annual planning workshop (the skill brings the structure + baseline data; the workshop fills the strategic judgment)
+- A sounding board when validating direction with founders / leadership ("here's what a default plan for this market looks like — what's wrong with it?")
+- Onboarding doc for a new marketing hire who needs to learn the category fast
+- A "what does our strategy doc look like" living template, refreshed every annual cycle
+
+Quality of output scales hard with what you feed the skill. Mode 1 with no documents gives 70-80% hypotheses — useful sketch, far from a final doc. Mode 2 with one internal document (last year's plan, brand tracker, segmentation study) cuts hypothesis density to 30-50%. Mode 3 with multiple uploaded documents cuts it to 10-20% — closest to consultant-grade.
 
 ---
 

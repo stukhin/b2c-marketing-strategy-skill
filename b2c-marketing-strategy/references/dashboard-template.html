@@ -6,14 +6,14 @@
 <title>[Brand + Market] — Marketing Strategy [Year]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   /* Universal structural vars — shared across all themes */
   :root {
-    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    --font: 'Manrope', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 
     --radius-sm: 10px;
     --radius: 14px;
@@ -8590,7 +8590,7 @@
               boxWidth: 10,
               boxHeight: 10,
               padding: 14,
-              font: { size: 11, family: 'Inter' },
+              font: { size: 11, family: 'Manrope' },
               color: '#6E6E73',
               usePointStyle: true,
               pointStyle: 'circle'
@@ -8598,8 +8598,8 @@
           },
           tooltip: {
             backgroundColor: 'rgba(29, 29, 31, 0.95)',
-            titleFont: { size: 11, family: 'Inter', weight: '500' },
-            bodyFont: { size: 12, family: 'Inter' },
+            titleFont: { size: 11, family: 'Manrope', weight: '500' },
+            bodyFont: { size: 12, family: 'Manrope' },
             padding: 10,
             cornerRadius: 6,
             displayColors: true,
@@ -8614,7 +8614,7 @@
             grid: { color: 'rgba(0, 0, 0, 0.04)' },
             border: { display: false },
             ticks: {
-              font: { size: 10, family: 'Inter' },
+              font: { size: 10, family: 'Manrope' },
               color: '#8E8E93',
               callback: function(v) { return v + '%'; }
             }
@@ -8623,7 +8623,7 @@
             grid: { display: false },
             border: { display: false },
             ticks: {
-              font: { size: 10, family: 'Inter' },
+              font: { size: 10, family: 'Manrope' },
               color: '#8E8E93'
             }
           }
@@ -8809,7 +8809,7 @@
       if (!ds || !ds.data) return;
       const ctx = chart.ctx;
       ctx.save();
-      ctx.font = "600 10px 'Inter'";
+      ctx.font = "600 10px 'Manrope'";
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ds.data.forEach((point, i) => {
@@ -8894,7 +8894,7 @@
             border: { display: true, color: '#1F2220', width: 1.5 },
             ticks: {
               stepSize: 5,
-              font: { size: 10, family: 'Inter' },
+              font: { size: 10, family: 'Manrope' },
               color: '#6C6F6D',
               padding: 8,
             }
@@ -8906,7 +8906,7 @@
             border: { display: true, color: '#1F2220', width: 1.5 },
             ticks: {
               stepSize: 5,
-              font: { size: 10, family: 'Inter' },
+              font: { size: 10, family: 'Manrope' },
               color: '#6C6F6D',
               padding: 8,
             }
@@ -9210,7 +9210,7 @@
         const c = chart.ctx;
         const dataArr = chart.data.datasets[0].data;
         c.save();
-        c.font = "700 11px 'Inter', system-ui, sans-serif";
+        c.font = "700 11px 'Manrope', system-ui, sans-serif";
         c.textAlign = 'center';
         c.textBaseline = 'middle';
         ds.data.forEach((arc, i) => {

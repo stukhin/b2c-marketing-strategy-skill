@@ -47,18 +47,37 @@ One-time setup, then runs proceed without interruptions.
 
 ## What the output looks like
 
-<!-- TODO: drag-and-drop screenshots into the GitHub web editor here. Recommended set:
-     1. Hero — full dashboard in Light theme (1600x1000)
-     2. Sidebar with theme switcher visible (Light / Steel / Vichy / Opaline / Mono swatches)
-     3. One rich section — e.g. #consumers (segment cards) or #competitors (head-to-head table)
-     4. Communication matrix with collapsible Hide/Show details state
-     5. (Optional gif) — clicking through 4 themes, View Transitions API crossfade visible
-     Made on Mac: Cmd+Shift+4 → drag area → Cmd+Ctrl+Shift+4 to copy → paste into editor. -->
+Screenshots from a real Fast-mode run — Chowdeck (Nigerian food delivery) 2026 strategy. Same dashboard, different sections.
 
-*Screenshots will be added here. For now, see live examples:*
+### 1 · Consumer segmentation
 
-- [Mode 1 Fast — Greensm Almaty (English, ride-hail, GTM)](./greensm-almaty-v1.html) — actual prod-test output, open in browser
-- [Mode 3 Deep — Sprawvochnaya Russia (Russian, media brand)](./spravochnaya-russia-v1.html) — actual prod-test output
+![Consumer segmentation — donut charts + segment cards with sensitivities, voice quotes, brand chips](./docs/screenshots/01-consumers.png)
+
+Revenue / GMV share and audience share donuts auto-derive from the segment-card data below. Each card carries reach %, sensitivities, voice-of-customer quote, preferred competitors, primary channels. Up to 8 segments in horizontal scroller.
+
+### 2 · Brand pyramid + positioning maps
+
+![Brand pyramid 5 tiers + 2 positioning maps with competitor dots](./docs/screenshots/02-brand-pyramid.png)
+
+Purpose → Essence → Personality → RTBs → Features hierarchy, plus functional + emotional positioning maps with competitor placement.
+
+### 3 · Competitive landscape
+
+![Indirect competitors table — Bolt rides, Jumia, WhatsApp, Shoprite with overlap analysis](./docs/screenshots/03-competitors.png)
+
+Direct + indirect competitor tables with sticky first column, parameter-by-parameter comparison, app ratings, monetization model, strategic risk per rival.
+
+### 4 · Media plan
+
+![Channel overview table with chip system + sidebar theme switcher](./docs/screenshots/04-channel-overview.png)
+
+10+ channel rows with reach, funnel stage, KPI, and Plan-2026 direction chip (↑ Increase / → Hold / ↓ Decrease). Theme switcher visible in left sidebar — 4 themes flip instantly via View Transitions API.
+
+### 5 · Assumptions + KPI tiles
+
+![Assumptions cards with confidence levels + market KPI tiles](./docs/screenshots/05-assumptions.png)
+
+3-tier confidence cards (High / Medium / Low) anchor what the year is betting on. Each card carries claim + leading signal + trigger (collapsed by default, click to expand). Market KPI tiles below show 4 macro signals with mini-charts.
 
 ---
 

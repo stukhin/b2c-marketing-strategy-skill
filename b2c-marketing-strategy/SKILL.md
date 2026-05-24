@@ -7,7 +7,7 @@ description: Create a structured annual marketing strategy for B2C digital produ
 
 Produces a one-file interactive HTML dashboard — annual strategy for a B2C digital product. 20 sections across overview / context / brand-audience / execution / governance / references. Single output file, English or Russian (picked at the start of the run), with client-side .docx export button.
 
-> **Skill state:** v1.1. Consolidation release after eleven patches' worth of real-tester feedback. Stable across all three modes and three Stage-modifier variants (launch / GTM / concept). English and Russian output. Continues to evolve.
+> **Skill state:** v1.3 (Fast-mode honesty pack). Builds on v1.2 consolidation. Three additions targeting Fast-mode reader-trust: (a) prominent **fast-mode-banner** rendered under the doc title in Fast runs only — primes the reader before the first chart; (b) **section confidence chips** (`.conf-chip` Verified / Mixed / Mostly hypothesis) next to each `<h3 class="h-sub">` heading — section-level rollup of the per-claim ★/.ext plates; (c) **Mode-aware depth caps** for #consumers, #competitors, #comm-matrix, #mmm, #regions, #comm-plan, #audience-lifecycle, #product-initiatives, #positioning, #business-goal — Fast mode renders skeletal versions of structural sections instead of full Deep-mode depth. Stable across all three modes and three Stage-modifier variants (launch / GTM / concept). English and Russian output. Continues to evolve.
 
 ## Workflow — fixed, do not reorder
 
@@ -80,6 +80,8 @@ If you notice a high-value source outside the catalog (recent regulator news, br
    - `.doc-title-main` — `[Brand + Market]`
    - `.doc-title-sub` — `Marketing Strategy [Year]`
 
+   **If Mode = Fast draft**, ALSO remove the `hidden` attribute from `<div class="fast-mode-banner" hidden>` (immediately below the `<h1 class="doc-title">` block). The banner is an honesty signal — even a skim-reader sees it before the first chart. In Guided and Deep modes the banner stays `hidden` (do nothing). Do this in the same Edit that fills the header — one atomic action.
+
 4. Edit the body section by section in this fixed wave order:
 
 ```
@@ -93,6 +95,8 @@ Wave 5 — Synthesis   business-goal → assumptions → exec → basics → nex
 **Synthesis is LAST.** Exec written first becomes a generic platitude. Written last, it distills already-filled appendix.
 
 Per section: replace `[Slot]` placeholders with real content via Edit. Anchor by the section's `<h3 class="h-sub">` heading + nearest unique placeholder.
+
+**Append confidence chip when each section is done.** As part of the same Edit that fills the section body (or as a quick second Edit for long sections that already used the 2–3 split rule), add `<span class="conf-chip [verified|mixed|hyp]">[Verified|Mixed|Mostly hypothesis]</span>` immediately after the `<h3 class="h-sub">` closing tag. See "Section confidence chips" section below for the tier mapping per section × mode. Chip tier reflects what actually landed in the section, not what was planned — if a Mode-2 section ended up with no uploaded data and is purely hypothesis, mark it `hyp` even if the table says `mixed`. Don't forget: the synthesis sections (#exec / #basics / #next-steps) get chips too (always `mixed`).
 
 **Atomic-edit-per-section discipline (revised 2026-04-29).** One Edit-tool call per section IF section ≤120 lines. Sections at 150–220 lines (`#competitors`, `#product-initiatives`, `#media`, `#mmm`, `#consumers`) MUST split into 2–3 logical blocks (header / table / takeaway). At 150+ lines the `old_string` payload itself dominates token cost — a 200-line atomic Edit costs more than 3 × 70-line Edits despite the narration overhead. The original "atomic-only" rule prevented a different anti-pattern (4–5 micro-Edits per section); that still applies. The right shape: 1 Edit for short sections, 2–3 Edits for long ones, never 4+.
 
@@ -167,10 +171,32 @@ for h in real_no_js[:15]: print(f'    {h}')
 
 # Check 4: HTML balance
 print(f'  Sections: {s.count(\"<section\")} open / {s.count(\"</section>\")} close (must be 20/20)')
+
+# Check 5: confidence chips on all h-sub headings
+hsub_count = s.count('<h3 class=\"h-sub\">')
+chip_count = s.count('conf-chip')
+# 20 sections: 1 uses <h2 class=h-major> (exec), 19 use <h3 class=h-sub>
+# basics section has 2 h-sub (Our basics + Next steps) but Next steps is part of basics so only 1 chip
+# Expected chip count ≥ 19; some sections may have multiple h-sub headings inside (subhead) — chip only on the top one
+if chip_count < 18:
+    print(f'✗ Confidence chips missing: {chip_count} chips for {hsub_count} h-sub headings (expect ≥18)')
+else:
+    print(f'✓ Confidence chips: {chip_count} present')
+
+# Check 6: Fast-mode banner state (must be visible in Fast runs, hidden in Guided/Deep)
+# Detect mode by file size / hypothesis density as proxy — skill operator confirms mode manually.
+banner_visible = 'class=\"fast-mode-banner\"' in s and 'fast-mode-banner\" hidden' not in s
+banner_hidden = 'fast-mode-banner\" hidden' in s
+if banner_visible:
+    print(f'  Fast-mode banner: VISIBLE (correct if Mode 1)')
+elif banner_hidden:
+    print(f'  Fast-mode banner: hidden (correct if Mode 2 or 3)')
+else:
+    print(f'✗ Fast-mode banner element missing — check template version')
 "
 ```
 
-All checks must pass: header filled, zero leaked patterns, low bracket-hit count (each remaining bracket is intentional `[to be confirmed]` or `[T1]/[T2]/[T3]` source-tier marker), 20/20 sections balanced. If anything fails — fix and re-run.
+All checks must pass: header filled, zero leaked patterns, low bracket-hit count (each remaining bracket is intentional `[to be confirmed]` or `[T1]/[T2]/[T3]` source-tier marker), 20/20 sections balanced, ≥18 confidence chips present (one per filled section), Fast-mode banner state matches the mode. If anything fails — fix and re-run.
 
 Also visually verify: every sidebar `nav-item` scrolls to a real `<section id="...">`.
 
@@ -200,7 +226,95 @@ Every line of fillable content takes one of three states. **No fact-looking text
   - **Readability exception for sentence-level hypothesis density:** the default is one star per claim. BUT if a single sentence carries **3 or more** hypothesis numbers (e.g. "MAU 2.5M ★ (+67%), expertise 35% ★ (+13pp), TG subscribers 150K ★ (+200%)"), the line becomes visually noisy with three individual stars. In that case: drop the per-number stars and put **ONE summary star at the very end of the sentence** followed by an inline note that flags the scope, e.g.: `...TG subscribers 150K (+200%) <span class="hyp">★</span><span class="text-mute" style="font-size:11px"> — all three Y1 targets are launch hypotheses</span>.` Threshold for switching styles: 1–2 hypothesis numbers in a sentence → individual stars; 3+ → one collective star with scope note. Same rule applies inside list-item bullets that pack multiple hypothesis numbers.
 - **To be confirmed** → `<span class="tbd">[to be confirmed]</span>` for genuinely-internal facts only the user can provide (specific people, internal tracker setups, past campaign results).
 
+## Section confidence chips
+
+The single-claim plates above (`.ext` / `.hyp` / `.tbd`) tell the reader the status of each line of content. But a 20-section dashboard with thousands of lines is hard to skim claim-by-claim. The **confidence chip** rolls each section up into a single tier the reader can see at a glance — rendered next to the section's `<h3 class="h-sub">` heading.
+
+**Three tiers:**
+
+- **🟢 Verified** — `<span class="conf-chip verified">Verified</span>` — section content is mostly grounded in `.ext`-cited sources (≥60% of substantive claims). Reader can act on this.
+- **🟡 Mixed** — `<span class="conf-chip mixed">Mixed</span>` — research foundation present but meaningful hypothesis fill. Useful but verify before acting externally.
+- **🟠 Mostly hypothesis** — `<span class="conf-chip hyp">Mostly hypothesis</span>` — primarily inferred / category-benchmark / strategic-frame work. Anchors team discussion, not external decisions.
+
+**Where to render the chip.** For sections wrapped in `<div class="heading-row">`, insert the chip immediately after the `<h3 class="h-sub">` closing tag, before the `<span class="info-tip">`. For bare `<h3 class="h-sub">Market</h3>` sections, insert the chip immediately after the closing `</h3>` on the same logical line. The CSS handles spacing (no need for `<br>` or wrappers).
+
+Example:
+
+```html
+<!-- bare h-sub -->
+<h3 class="h-sub">Market</h3> <span class="conf-chip verified">Verified</span>
+
+<!-- with heading-row + info-tip -->
+<div class="heading-row">
+  <h3 class="h-sub">Competitors</h3>
+  <span class="conf-chip verified">Verified</span>
+  <span class="info-tip" data-tip="...">!</span>
+</div>
+```
+
+**Tier mapping by section × mode.** Apply the chip after the section is fully filled — the tier reflects what actually landed, not what was planned. Use this table as a default; override based on what verifies in practice (if `#consumers` in Mode 2 ended up entirely from user-uploaded segmentation study, bump it to Verified).
+
+| Section | Fast (Mode 1) | Guided (Mode 2) | Deep (Mode 3) |
+|---|---|---|---|
+| #market | Verified | Verified | Verified |
+| #consumers | Hypothesis | Mixed | Verified |
+| #competitors | Verified | Verified | Verified |
+| #brand-health | Hypothesis | Hypothesis (or Verified if tracker uploaded) | Verified (if tracker) / Hypothesis |
+| #swot | Mixed | Verified | Verified |
+| #brand-pyramid | Hypothesis | Hypothesis | Mixed |
+| #positioning | Hypothesis | Hypothesis | Mixed |
+| #audience-lifecycle | Hypothesis | Mixed | Verified |
+| #comm-matrix | Hypothesis | Hypothesis | Mixed |
+| #product-initiatives | Mixed | Mixed | Verified |
+| #media | Mixed | Mixed | Verified |
+| #mmm | Hypothesis | Mixed (or Verified if prev-year spend uploaded) | Verified |
+| #regions | Mixed | Mixed | Verified |
+| #comm-plan | Hypothesis | Mixed | Mixed |
+| #risks | Mixed | Verified | Verified |
+| #references | Verified | Verified | Verified |
+| #business-goal | Hypothesis | Mixed (or Verified if KPI tree uploaded) | Verified |
+| #assumptions | Mixed | Mixed | Mixed |
+| #exec | Mixed | Mixed | Mixed |
+| #basics | Mixed | Mixed | Mixed |
+| #next-steps | Mixed | Mixed | Mixed |
+
+**Why exec/basics/next-steps are always Mixed:** synthesis sections distill the appendix. Their confidence inherits from underlying sections (mostly Mixed weighted average), so a single chip honestly maps to Mixed regardless of mode. If the underlying appendix is Hypothesis-dominant in Fast mode, the Fast-mode banner already communicates that loud — no need to double-flag the synthesis.
+
 ## Per-section content notes
+
+### Mode-aware depth caps (apply in addition to the per-section notes below)
+
+Fast mode (Mode 1) targets a ~5-min interview, ~1h total, and 70–80% hypothesis density. Rendering every section at full Deep-mode depth in Fast mode (a) burns the token budget, (b) generates "fake copy" / fake voice quotes / fake sub-channel ROAS that look authoritative but aren't, (c) confuses the reader about confidence level. **Fast mode = skeletal version of structural sections.** Guided is medium depth; Deep is full depth.
+
+| Section | Fast (Mode 1) | Guided (Mode 2) | Deep (Mode 3) |
+|---|---|---|---|
+| #market — trends | 5 rows | 6 rows | 7–9 rows |
+| #consumers — segment cards | **3 cards**, drop voice quote + brand chips | 5 cards | 5–8 cards |
+| #competitors — direct | 3 columns, **skip indirect table** | 3 + 2 collapsed | 3 + 2 collapsed |
+| #competitors — comm examples | 2 examples | 4 examples | 4–6 examples |
+| #swot — items per quadrant | 3 | 4 | 4–5 |
+| #brand-pyramid | All 5 tiers (no count change) — but **add "needs brand workshop" footnote** | All 5 tiers | All 5 tiers |
+| #positioning — maps | **Functional map ONLY**; opt-out card on emotional map | 1–2 maps | 2 maps |
+| #audience-lifecycle | **2 cohorts** (New + Existing); skip Churned | 3 cohorts | 3 cohorts |
+| #comm-matrix | **OPT-OUT** — replace body with opt-out card pointing to #audience-lifecycle | 3 segments × 5 rows | 4-5 segments × 5 rows |
+| #product-initiatives — flagships | **1–2 cards**, skip roadmap table | 2–3 cards + roadmap | 3–5 cards + roadmap |
+| #media — channel rows | 6 rows, **skip channel-bucket cards** (only KPI strip + table) | 8–10 rows + buckets | 10–12 rows + buckets |
+| #mmm — table rows | **5 aggregated rows** (parent buckets), no sub-channel split | 8 rows | 11–15 rows |
+| #regions | **4 cluster rows** | 5 rows | 6–7 rows |
+| #comm-plan | **3 rows** (T1, T2, Always-on); skip T3 experiments + Special projects rows | 5 rows | 5–7 rows |
+| #risks | 5 risks | 6–7 risks | 7+ risks |
+| #references | 8–10 entries | 10–13 entries | 12–15 entries |
+| #business-goal — stages | **4 stages**: Awareness, Acquisition, Retention, Monetization (skip Activation + Profitability) | 5 stages | 6 stages |
+| #assumptions | 4 cards | 5–7 cards | 7+ cards |
+| #exec — strategic bets | 3 bets | 3–4 bets | 3–6 bets |
+| #basics | 4 items (Target audience / Positioning / Communication plan / Budget — skip Points of difference standalone, merge into Positioning) | 5 items | 5 items |
+| #next-steps | 4 actions | 5–6 actions | 6–8 actions |
+
+**Fast mode "creative direction, not finished copy" rule.** In Fast mode, comm-matrix opt-out, segment voice quotes (skipped on cards), comm-plan T1/T2 campaign cells, brand pyramid all carry the same caveat: these are **direction frames**, not approved creative. Don't generate slogan-quality ad copy in Fast mode — write the strategic angle ("speed + status, action-led, ≤40 char" instead of "Lunch arrives. So do you."). The fast-mode-banner at the top of the doc already primes the reader; the inline content should match that humility.
+
+**Don't fake what isn't there.** When a Fast-mode cap means a row / card / map is absent, do NOT pad the surviving rows to fill the visual space. A 3-card segment scroller with quality content reads stronger than a 5-card scroller with two padded near-duplicates.
+
+### Per-section content
 
 - **#exec / #basics / #next-steps** — synthesis only. **▼ density rule:** each basics-title (Target audience / Positioning / Points of difference / Communication plan / Budget) MUST carry `<a class="tri" href="#<appendix>">▼</a>` to its appendix anchor; each substantive sub-bullet that names a segment / brand / claim / metric gets its own `<a class="tri" href="...">▼</a>` too. Anchors: #consumers (segments), #competitors (rivals), #positioning (brand pyramid + maps), #brand-health (tracker stats), #comm-plan (channel/lifecycle), #mmm (budget + ROAS), #product-initiatives (flagships), #audience-lifecycle (cohort × stage). Use `<a class="tri" href="#…">` not `<span class="tri">` — the latter is unclickable.
   - **Key objectives tiles — EXACTLY 3, never 4.** The objectives grid in `#exec` is a forcing function for sharper plan. If the year carries 4 ambitions, pick the top 3. The 4th tile is always the one that gets watered down in synthesis and dilutes the visual weight of the 3 real bets. Template no longer suggests "2-4 tiles" — locked to 3.
@@ -211,7 +325,7 @@ Every line of fillable content takes one of three states. **No fact-looking text
 - **#business-goal** — funnel stages with 3-dot priority and delta arrows. Numbers either sourced or starred.
 - **#assumptions** — 3–7 cards: claim + confidence + leading signal + breaker.
 - **#market** — overview + 3–7 trends. All numbers sourced (T1/T2) or starred.
-- **#consumers** — **5–8 segment cards (minimum 5)**: reach % bar, 1–2 metrics, sensitivity, voice quote, brand chips. Hard quality cap: each segment must have distinguishable financial behaviour, distinct media mix, OR distinct message — if two segments collapse on all three, merge them and pick a 5th from elsewhere.
+- **#consumers** — **5–8 segment cards in Guided/Deep (minimum 5); 3 cards in Fast mode** per the Mode-aware depth caps above. Card content: reach % bar, 1–2 metrics, sensitivity, voice quote, brand chips. **In Fast mode, drop voice quote + brand chips per card** (keep ID + role + 2 metrics + sensitivity + geo) — they read as fake creative work when they're hypotheses. Hard quality cap: each segment must have distinguishable financial behaviour, distinct media mix, OR distinct message — if two segments collapse on all three, merge them. In Guided/Deep, never drop below 5 cards.
   - **Card top-corner badges (mandatory, all cards):** `<span class="seg-num">#N</span>` left + `<span class="seg-prio high|med|low">High|Med|Low</span>` right. N is the sequential card index (1, 2, …); priority distribution **must be ~1–2 High, 1–3 Med, the rest Low** — the priority signal is where budget actually concentrates, not a flat spread. Don't tag every card the same level.
   - Two donut charts above the scroller (Revenue/GMV share + Audience share) auto-derive from `.segment-bar.reach` + `.segment-bar.gmv` widths and `.seg-num` + `.segment-name` labels. Bob fills the cards once; pies populate.
 - **#competitors** — direct (parameters-as-rows × competitors-as-columns), head-to-head verdicts, indirect, 1–2 positioning maps, radar chart. **Soft cap: 3 direct competitors in the main H2H table.** Three columns side-by-side is the visual limit before the table becomes a wall of small text. If the user names 4 or 5 direct competitors as truly material, keep the **top 3 by share or threat-to-us** in the main table and put the 4th/5th into a collapsible `<details>` block right below the main table with the same row structure: `<details class="more-competitors"><summary>+ N more competitors</summary>...</details>`. The radar chart can still include all 4–5 (radars handle 5 polygons fine). H2H verdicts table also stays at 3. This preserves overview while not hiding the wider competitive set. **Communication examples MUST come from real campaigns. This is a mandatory pre-fill step, not a recommendation.**
@@ -225,9 +339,9 @@ Every line of fillable content takes one of three states. **No fact-looking text
 - **#brand-health** — funnel attribute bars vs benchmark. If no real tracker data, flag whole section with `.hypothesis-badge`.
 - **#swot** — 4 quadrants × 3–5 items, each with `.ext` evidence.
 - **#brand-pyramid** — 5 levels (essence → values → personality → benefits → attributes).
-- **#positioning** — 1–2 positioning maps with category-specific axes + 4–6 hypothesis points.
+- **#positioning** — 1–2 positioning maps with category-specific axes + 4–6 hypothesis points. **In Fast mode render only the Functional map** (axes from observable features); replace the Emotional map body with `<div class="card"><p class="intro-para text-mute"><em>Emotional positioning needs brand-tracker calibration or workshop output — skipped in Fast mode.</em></p></div>` inside the same `.positioning-card` container. Keep its title.
 - **#audience-lifecycle** — segments × funnel-stages matrix, 1 line per cell.
-- **#comm-matrix** — segments × stages × communication objective, terse.
+- **#comm-matrix** — segments × stages × communication objective, terse. **In Fast mode this section opts out entirely** — replace body with `<div class="card"><p class="intro-para text-mute"><em>Fast-mode skip — segment × stage messaging frames live in #audience-lifecycle. Full communication matrix needs creative team input, not Fast-draft generation.</em></p></div>`. Keep heading + sidebar nav entry. Reason: in Fast mode the matrix would inevitably contain Bob's invented headlines that read like approved copy.
 - **#product-initiatives** — 3–5 flagship cards on timeline: launch pill + 3-block grid (audience+problem / channel+messages / metrics+assets).
 - **#media** — 6–12 channel rows: reach + funnel-stage + KPI + plan direction (↑/→/↓).
 - **#mmm** — budget bucket bar + channel saturation × ROAS table.

@@ -977,11 +977,15 @@
      Place IMMEDIATELY after the value it qualifies, no space:
        Example: "<strong>2.5M</strong><span class="hyp">★</span> verified accounts"
      Use for: target numbers, inferred segments, benchmark-derived KPIs, scoring estimates, anything NOT user-provided AND NOT web-sourced. The marker is purely visual — no tooltip / hover plate. */
-  /* Hypothesis marker — purely visual, no hover/tooltip behavior. */
+  /* Hypothesis marker — purely visual, no hover/tooltip behavior.
+     Colored amber (semantic-warning) so the reader recognises it as a flag,
+     not as a footnote ordinal. Still small + superscript so it doesn't visually
+     dominate prose — for run-wide hypothesis density warning, use .fast-mode-banner. */
   .hyp {
     display: inline-block;
-    font-size: 9px;
-    color: var(--text-faint);
+    font-size: 10px;
+    color: var(--semantic-warning);
+    font-weight: 700;
     margin-left: 2px;
     vertical-align: super;
     line-height: 1;
@@ -990,6 +994,95 @@
     user-select: none;
     pointer-events: none;
   }
+
+  /* Fast-mode banner — prominent honesty notice rendered immediately under the doc title
+     in Fast mode runs only. Hidden by default; Bob removes the `hidden` attribute in Step 4
+     when Mode == Fast draft. The banner is the single most important honesty signal:
+     even a skim-reader sees it before the first chart. Do NOT auto-hide on scroll —
+     it must remain visible at top so the reader sees it again when scrolling back. */
+  .fast-mode-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 12px 0 24px;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    background: var(--semantic-warning-bg);
+    border: 1.5px solid var(--semantic-warning-border);
+    color: var(--text-soft);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .fast-mode-banner[hidden] { display: none; }
+  .fast-mode-banner::before {
+    content: "⚠";
+    color: var(--semantic-warning);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .fast-mode-banner-body { flex: 1; }
+  .fast-mode-banner-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--semantic-warning);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .fast-mode-banner-text {
+    color: var(--text-body);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .fast-mode-banner-text strong { color: var(--text); font-weight: 600; }
+
+  /* Section confidence chip — small inline marker rendered next to each h-sub heading.
+     Three tiers communicate how much of the section is verified vs hypothesis.
+     Tier semantics:
+       .verified — ≥60% of substantive claims have .ext source. Reader can act on this.
+       .mixed    — research foundation + plausible hypothesis fill. Useful but verify before acting.
+       .hyp      — mostly hypothesis (brand pyramid, positioning, comm-matrix in Fast mode, etc).
+                   Anchors team discussion, not external decisions.
+     The chip sits inline after the .h-sub badge in the same line; CSS gives it slight visual
+     separation but no line break. */
+  .conf-chip {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1.25;
+    user-select: none;
+  }
+  .conf-chip.verified {
+    background: var(--semantic-success-bg);
+    color: var(--semantic-success);
+    border: 1px solid var(--semantic-success-border);
+  }
+  .conf-chip.mixed {
+    background: var(--semantic-info-bg);
+    color: var(--semantic-info);
+    border: 1px solid var(--semantic-info-border);
+  }
+  .conf-chip.hyp {
+    background: var(--semantic-warning-bg);
+    color: var(--semantic-warning);
+    border: 1px solid var(--semantic-warning-border);
+  }
+  .conf-chip::before {
+    margin-right: 4px;
+    font-size: 11px;
+    line-height: 1;
+  }
+  .conf-chip.verified::before { content: "●"; }
+  .conf-chip.mixed::before { content: "◐"; }
+  .conf-chip.hyp::before { content: "○"; }
 
   /* Underline emphasis */
   .u-solid {
@@ -4969,6 +5062,18 @@
       <span class="doc-title-main">[Brand + Market]</span>
       <span class="doc-title-sub">Marketing Strategy [Year]</span>
     </h1>
+
+    <!-- FAST-MODE BANNER: hidden by default. In Fast mode Bob removes the `hidden` attribute
+         in Step 4 (alongside HEADER fill). Banner stays hidden in Guided and Deep runs.
+         Honest top-of-doc signal: even a skim reader sees it before the first chart. -->
+    <div class="fast-mode-banner" hidden>
+      <div class="fast-mode-banner-body">
+        <div class="fast-mode-banner-title">Fast draft — review before sharing</div>
+        <div class="fast-mode-banner-text">
+          This dashboard was generated in <strong>Fast mode</strong> (~5-min interview, no internal documents). <strong>70-80% of numbers are hypothesis</strong>, marked with the amber ★ inline. Section-level confidence chips (next to each heading) show which sections are verified vs hypothesis-heavy. Treat this as a <strong>straw-man for review</strong> with your team — calibrate hypothesis values against your own data before sharing externally or acting on the numbers.
+        </div>
+      </div>
+    </div>
 
     <section id="exec">
       <h2 class="h-major">Executive summary</h2>
